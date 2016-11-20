@@ -2,6 +2,7 @@ import queue
 import threading
 import os
 
+
 def ist_primzahl(number):
     """
     :param number: The number to be checked if it is prime
@@ -126,7 +127,7 @@ class V2(threading.Thread):
 
 if __name__ == '__main__':
     #Only there if the program gets tested more than once to "clear" the file
-    os.remove("file.txt")
+    #os.remove("file.txt")
     #Instanciate queue for prime numbers
     queue1 = queue.Queue()
     #Instanciate Producer and Consumer 1, start them and wait for them to finish
