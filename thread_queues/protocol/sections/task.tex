@@ -1,35 +1,28 @@
 %!TEX root=../document.tex
 
 \section{Einführung}
-Dieses Protokoll-Template soll helfen den Laborübungsteil entsprechend dokumentieren zu können. Diese Vorlage ist in \LaTeX  verfasst.
+Schreibe ein Programm, welches die Summe von 1 bis zu einer von dem/der Benutzer/in einzugebenden (potentiell sehr großen) Zahl mithilfe von drei Threads berechnet!
 
-\subsection{Ziele}
-Hier werden die zu erwerbenden Kompetenzen und deren Deskriptoren beschrieben. Diese werden von den unterweisenden Lehrkräften vorgestellt.
-
-Dies kann natürlich auch durch eine Aufzählung erfolgen:
+\subsection{Grundanforderungen}
 
 \begin{itemize}
-	\item \textbf{Lorem ipsum:} dolor sit amet, consetetur sadipscing elitr
-	\item sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat
-	\item ut labore et dolore magna aliquyam erat, sed diam voluptua
+	\item Zwei eigene Klassen (Consumer und Producer) erben von Thread (E1 und V1)
+	\item Die zwei Klassen sind über einen Queue verbunden
+	\item Der Erzeuger E1 sucht nach Primzahlen. Jede gefundene Primzahl wird über die Queue an den Verbraucher V1 geschickt
+	\item Der Verbraucher gibt die empfangene Zahl in der Konsole aus und schreibt sie außerdem in eine simple Textdatei
+	\item Erzeuger und Verbraucher stimmen sich über \verb|Queue.task_done()| und \verb|Queue.join()| ab
+	\item Kommentare und Sphinx-Dokumentation
+	\item Kurzes Protokoll über deine Vorgangsweise, Aufwand, Resultate, Beobachtungen, Schwierigkeiten, ... Bitte sauberes Dokument erstellen! (Kopf- und Fußzeile etc.)
 \end{itemize}
 
 
-\subsection{Voraussetzungen}
-Welche Informationen sind notwendig um die Laborübung reibungslos durchführen zu können? Hier werden alle Requirements der Lehrkraft detailliert beschrieben und mit Quellen untermauert.
-
-Hier zum Beispiel die Architektur der \textit{Common Object-Request-Broker Architecture}:
-\begin{figure}[!h]
-	\begin{center}
-		\includegraphics[width=0.5\linewidth]{images/corba.jpg}
-		\caption{Common Object-Request-Broker Architecture \cite{tanenbaum2007verteilte}}
-		\label{broker}
-	\end{center}
-\end{figure}
-
-
-\subsection{Aufgabenstellung}
-Hier wird dann die konkrete Aufgabenstellung der Laborübung definiert.
-
-Nun kommt ein Seitenumbruch, um eine klare Trennung der Schülerarbeit zu bestimmen.
+\subsection{Erweiterungen}
+\begin{itemize}
+	\item Ein weiterer Thread nimmt Benutzereingaben entgegen
+	\item Dieser Thread kann als ein weiterer Erzeuger E2 gesehen werden
+	\item Wird eine (potentiell sehr große) Zahl eingegeben, so wird in einem weiteren Verbraucher V2 überprüft, ob es sich bei dieser produzierten Zahl um eine Primzahl handelt
+	\item E2 und V2 müssen sich nicht über \verb|task_done()| absprechen, d.h. E2 kann mehrere Aufträge in die Queue schicken, bevor V2 mit der Bearbeitung fertig ist
+	\item Wird "exit" eingegeben, so werden alle Threads sauber beendet
+	\item Achte auf Fehlerfälle!
+\end{itemize}
 \clearpage
