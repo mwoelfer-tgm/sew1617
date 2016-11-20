@@ -64,8 +64,13 @@ class E2(threading.Thread):
             eingabe = input("Geben sie entweder eine Zahl welche überprüft werden soll oder 'exit' zum Beenden ")
             if eingabe == 'exit':
                 break
-            elif isinstance(int(eingabe),int):
-                self.queue.put(int(eingabe))
+            else:
+                try:
+                    eingabe = int(eingabe)
+                    break
+                except ValueError:
+                    raise ValueError("Bitte eine Zahl oder 'exit' angeben!")
+                self.queue.put(eingabe)
 
 class V1(threading.Thread):
     """
@@ -115,7 +120,7 @@ class V2(threading.Thread):
         while True:
             #If the Producer got terminated, this Thread should get terminated too
             #Not sure if works, but in theory it should
-            if (not t3.is_alive()):
+            if not t3.is_alive():
                 print("Producer was terminated")
                 break
             number = self.queue.get()
