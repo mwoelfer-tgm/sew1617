@@ -1,35 +1,32 @@
 %!TEX root=../document.tex
 
 \section{Einführung}
-Dieses Protokoll-Template soll helfen den Laborübungsteil entsprechend dokumentieren zu können. Diese Vorlage ist in \LaTeX  verfasst.
+Schreibe ein Programm, welches ein simples Erzeuger-Verbraucher-Muster implementiert!
 
-\subsection{Ziele}
-Hier werden die zu erwerbenden Kompetenzen und deren Deskriptoren beschrieben. Diese werden von den unterweisenden Lehrkräften vorgestellt.
-
-Dies kann natürlich auch durch eine Aufzählung erfolgen:
+\subsection{Grundanforderungen}
 
 \begin{itemize}
-	\item \textbf{Lorem ipsum:} dolor sit amet, consetetur sadipscing elitr
-	\item sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat
-	\item ut labore et dolore magna aliquyam erat, sed diam voluptua
+	\item Klasse Watchdog
+	\item Zwei eigene Klassen (Consumer und Producer) erben von Thread
+	\item Zumindest 2 Erzeuger und zwei Verbraucher 
+	\item Die zwei Klassen sind über einen Queue verbunden
+	\item Die Erzeuger ermitteln eine Zufallszahl (0 bis 254). Jede gefundene Zahl wird über die Queue an die Verbraucher geschickt
+	\item Die Verbraucher geben Ihre erhaltene Zahl auf der Konsole aus
+	\item Erzeuger und Verbraucher werden mittels Watchdog ordnungsgemäß beendet
+	\item Erzeuger: Ausgabe der erstellten Zahl
+	\item Verbraucher: Ausgabe der erhaltenen Zahl
+	\item Die Queue hat eine Maximalgröße von 20 Elementen
+	\item Kommentare und Sphinx-Dokumentation
+	\item Kurzes Protokoll über deine Vorgangsweise, Aufwand, Resultate, Beobachtungen, Schwierigkeiten, ... Bitte sauberes Dokument erstellen! (Kopf- und Fußzeile etc.)
 \end{itemize}
 
 
-\subsection{Voraussetzungen}
-Welche Informationen sind notwendig um die Laborübung reibungslos durchführen zu können? Hier werden alle Requirements der Lehrkraft detailliert beschrieben und mit Quellen untermauert.
-
-Hier zum Beispiel die Architektur der \textit{Common Object-Request-Broker Architecture}:
-\begin{figure}[!h]
-	\begin{center}
-		\includegraphics[width=0.5\linewidth]{images/corba.jpg}
-		\caption{Common Object-Request-Broker Architecture \cite{tanenbaum2007verteilte}}
-		\label{broker}
-	\end{center}
-\end{figure}
-
-
-\subsection{Aufgabenstellung}
-Hier wird dann die konkrete Aufgabenstellung der Laborübung definiert.
-
-Nun kommt ein Seitenumbruch, um eine klare Trennung der Schülerarbeit zu bestimmen.
+\subsection{Erweiterungen}
+\begin{itemize}
+	\item Erzeuger: Anzahl der vorhandenen Queue-Elemente nach dem Hinzufügen
+	\item Verbraucher: Anzahl der vorhandenen Queue-Elemente nach dem Entfernen
+	\item Erzeuger: Ausgabe auf der Konsole, falls die Queue voll ist
+	\item Verbraucher: Ausgabe auf der Konsole, falls die Queue leer ist
+	\item GUI: Darstellung des aktuellen Status der Queue (grafische Darstellung des Füllungsgrades)
+\end{itemize}
 \clearpage

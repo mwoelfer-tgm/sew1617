@@ -43,7 +43,8 @@ class Producer(threading.Thread, Stoppable):
                 #Special printing so the message is red (Pierre Rieger helped me with this)
                 print("\033[91mQUEUE VOLL!!!!!\033[0m")
 
-            """No sleep time because:
+            #self.queue.join()
+            """No sleep time and join because:
                If there was a sleep time then you wouldn't see how the queue always gets fuller and fuller and then more empty and more empty
                This effect is because the Producer and Consumer don't always work equally fast
 
@@ -86,6 +87,7 @@ class Consumer(threading.Thread,Stoppable):
                 # Put out message in blue (Also help from Pierre Rieger)
                 print("\033[94mQUEUE LEER!!!!!\033[0m")
 
+            self.queue.task_done()
             #Same reason as above why sleep isn't here
             #time.sleep(random.random())
 

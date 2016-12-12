@@ -1,68 +1,53 @@
 %!TEX root=../document.tex
 
-\section{Ergebnisse}
-\label{sec:Ergebnisse}
+\section{Vorgangsweise Grundanforderung}
+Um die Grundanforderungen zu lösen habe ich zuerst den \verb|WatchDog| und \verb|Stoppable| so implementiert, wie es in dem bereitgestellten \verb|.pdf| stand.
 
-Hier sollen die Schritte der Laborübung erläutert werden. Alle Fragestellungen der Lehrkraft müssen hier beantwortet werden. Etwaige Probleme bzw. Schwierigkeiten sollten ebenfalls hier angeführt werden.
+Nachdem diese Klassen erstellt wurden habe ich den \verb|Producer| und den \verb|Consumer| erstellt. Dieser erben von \verb|threading.Thread| und \verb|Stoppable| und es wird die abstrakte Methode \verb|stopping()| implementiert. 
 
-Es kann gut möglich sein, dass Lehrkräfte hier auch noch andere Eckpunkte explizit verlangen. Diese können dann in der selben Hierarchiestufe wie die \textit{\nameref{sec:Ergebnisse}} eingeordnet werden. Viel Spass nun mit einer kleinen Übersicht von \LaTeX-Elementen.
+In der Methode \verb|run()| vom Producer werden lediglich Zufallszahlen von 0 bis 254 erstellt und danach in die queue geschickt, welche sich alle \verb|Producer| und \verb|Consumer| teilen. 
 
-\subsection{Tabelle}
-\renewcommand{\arraystretch}{1.5}
-\begin{table}[!h]
-	\center
-	\begin{tabular}{ | @{\hspace{3mm}} c @{\hspace{3mm}} | @{\hspace{3mm}} l @{\hspace{3mm}} | }
-		\hline Header & Kopf\\ \hline\hline
-		\textbf{Lorem} & Ipsum dolor sit amet, consetetur sadipscing elitr\\ \hline
-		\textbf{Ipsum} & At vero eos et accusam et justo duo dolores et ea rebum.\\
-			& Stet clita kasd gubergren, no sea takimata sanctus\\ \hline
-		\textbf{Dolor} & Consetetur sadipscing elitr, sed diam nonumy\\\hline
-	\end{tabular}
-	\caption{Lorem ipsum dolor sit amet \cite{tanenbaum2007verteilte}}
-	\label{methoden}
-\end{table}
+In der Methode \verb|run()| vom Consumer werden Zahlen aus der \verb|Queue| entnommen und simpel ausgegeben.
 
-\subsection{Aufzählung}
+Damit die \verb|Queue-Size| nur maximal 20 groß ist, wird bei der Initialiserung der queue das Attribut \verb|maxsize| auf 20 gesetzt:
 
-\begin{itemize}
-	\item \textbf{Lorem ipsum:} dolor sit amet, consetetur sadipscing elitr
-	\item sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat
-	\item ut labore et dolore magna aliquyam erat, sed diam voluptua
-\end{itemize}
-
-\subsection{Code}
-
-At vero eos et accusam et justo duo dolores et ea rebum.
-
-\begin{lstlisting}[style=Java, caption=Implizite Transaktion \cite{tanenbaum2007verteilte}]
-try{
-   gTransCur.begin();
-   //Perform the operation inside the transaction
-   not_registered = 
-       gRegistrarObjRef.register_for_courses(student_id,selected_course_numbers);
-
-
-   if (not_registered != null)
-
-     //If operation executes with no errors, commit the transaction
-     boolean report_heuristics = true;
-     gTransCur.commit(report_heuristics);
-
-   } else gTransCur.rollback();
-
-
-} catch(org.omg.CosTransactions.NoTransaction nte) {
-    System.err.println("NoTransaction: " + nte);
-    System.exit(1);
-} catch(org.omg.CosTransactions.SubtransactionsUnavailable e) {
-    System.err.println("Subtransactions Unavailable: " + e);
-    System.exit(1);
-} catch(org.omg.CosTransactions.HeuristicHazard e) {
-    System.err.println("HeuristicHazard: " + e);
-    System.exit(1);
-} catch(org.omg.CosTransactions.HeuristicMixed e) {
-    System.err.println("HeuristicMixed: " + e);
-    System.exit(1);
-}
+\begin{lstlisting}[language=Python]
+queue.maxsize = 20
 \end{lstlisting}
 
+Die Sphinx Dokumentation zu erstellen hat sich als sehr leicht dargestellt, ich habe einfach 2 \verb|.rst| Files erstellt, eines erhält alle Informationen zu dem \verb|WatchDog| und \verb|Stoppable|, während das andere den tatsächlich selbst geschrieben Code enthält, also \verb|Producer| und \verb|Consumer|.
+
+\section{Vorgangsweise Erweiterungen}
+Die Anzahl der Inhalte einer \verb|Queue| erhält man durch \verb|queue.qsize()|.
+
+Um auszugeben wann sie voll ist muss man sie nur mit ihrer ihrer maxsize vergleichen
+
+\begin{lstlisting}[language=Python]
+if self.queue.qsize() == self.queue.maxsize:
+\end{lstlisting}
+
+Um auszugeben wann sie leer ist muss man nur vergleichen ob qsize 0 ist
+
+\begin{lstlisting}[language=Python]
+if self.queue.qsize() == 0:
+\end{lstlisting}
+
+
+Das schwierigste an den Erweiterungen war die GUI, was mich zu dem Thema Schwierigkeiten bringt
+
+\section{Schwierigkeiten}
+Die GUI umzusetzen hat leider nicht funktioniert aus mehreren Gründen, aber zuerst beschreibe ich meinen Ansatz.
+
+Meine Idee war noch eine Klasse zu schreiben welche auch von \verb|threading.Thread| und \verb|Stoppable| erbt und dieser Thread kümmert sich mit \verb|tkinter| nur um die GUI. Es musste irgendwie möglich sein außerhalb dieser Methode, mit einer statischen Methode, von diesem GUI irgendwelche Quadrate oder was auch immer zu setzen damit man eine Art Status anzeigen kann.
+
+Es hat alles recht gut funktioniert ich bin bald auf mein erstes großes Problem gestoßen: 
+
+\textbf{Man kann tkinter nicht in der init-funktion initialisieren.}
+
+Wenn ich tkinter.Tk() in der \verb|__init__()| funktion aufgerufen habe hat es nie funktioniert, und dewegen musste ich mein \verb|canvas| und die \verb|root| Variable in meiner \verb|run()| Funktion haben. Dies hat aber dazu geführt dass \verb|Canvas| nicht zugreifbar war für die methode welche den Status setzt. 
+
+Dies hat zu noch viel mehreren Problemen geführt was mich zum Entschuss gebracht hat dass es viel zu Schwer für mich ist ein tkinter-GUI in einem seperaten Thread zu erstellen.
+
+\subsection{Github-Link}
+
+\hyperlink{https://github.com/mwoelfer-tgm/sew1617/tree/master/thread_watchdog}{Hier Klicken für Git Reposiory}

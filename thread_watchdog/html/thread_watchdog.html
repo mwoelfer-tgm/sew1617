@@ -1,0 +1,333 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>thread_watchdog &#8212; thread_watchdog 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="thread_watchdog 1.0 documentation" href="index.html" />
+    <link rel="next" title="watchdog" href="watchdog.html" />
+    <link rel="prev" title="Welcome to thread_watchdog’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="module-thread_watchdog">
+<span id="thread-watchdog"></span><h1>thread_watchdog<a class="headerlink" href="#module-thread_watchdog" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="thread_watchdog.Consumer">
+<em class="property">class </em><code class="descclassname">thread_watchdog.</code><code class="descname">Consumer</code><span class="sig-paren">(</span><em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#thread_watchdog.Consumer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="thread_watchdog.Consumer.__abstractmethods__">
+<code class="descname">__abstractmethods__</code><em class="property"> = frozenset()</em><a class="headerlink" href="#thread_watchdog.Consumer.__abstractmethods__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thread_watchdog.Consumer.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#thread_watchdog.Consumer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes every object of Consumer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>queue</strong> &#8211; Queue where numbers get retrieven from</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thread_watchdog.Consumer.__module__">
+<code class="descname">__module__</code><em class="property"> = 'thread_watchdog'</em><a class="headerlink" href="#thread_watchdog.Consumer.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thread_watchdog.Consumer.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#thread_watchdog.Consumer.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method receives the numbers from the queue and puts them out into the console. Also if the Queue was empty it&#8217;d put a message into the console also</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="thread_watchdog.Consumer.stopping">
+<code class="descname">stopping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#thread_watchdog.Consumer.stopping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets called by watchdog to set self.running to false</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="thread_watchdog.Producer">
+<em class="property">class </em><code class="descclassname">thread_watchdog.</code><code class="descname">Producer</code><span class="sig-paren">(</span><em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#thread_watchdog.Producer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="thread_watchdog.Producer.__abstractmethods__">
+<code class="descname">__abstractmethods__</code><em class="property"> = frozenset()</em><a class="headerlink" href="#thread_watchdog.Producer.__abstractmethods__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thread_watchdog.Producer.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>queue</em><span class="sig-paren">)</span><a class="headerlink" href="#thread_watchdog.Producer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes every object of Producer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>queue</strong> &#8211; Queue where random number get put in</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="thread_watchdog.Producer.__module__">
+<code class="descname">__module__</code><em class="property"> = 'thread_watchdog'</em><a class="headerlink" href="#thread_watchdog.Producer.__module__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="thread_watchdog.Producer.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#thread_watchdog.Producer.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates random numbers, puts them into the queue and also puts out which number was out into it. If the queue is full this method
+puts out an message!</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="thread_watchdog.Producer.stopping">
+<code class="descname">stopping</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#thread_watchdog.Producer.stopping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets called by watchdog to set self.running to false</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">thread_watchdog.</code><code class="descname">Producer</code><span class="sig-paren">(</span><em>queue</em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code>, <a class="reference internal" href="watchdog.html#watchdog.Stoppable" title="watchdog.Stoppable"><code class="xref py py-class docutils literal"><span class="pre">watchdog.Stoppable</span></code></a></p>
+<dl class="attribute">
+<dt>
+<code class="descname">__abstractmethods__</code><em class="property"> = frozenset()</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>queue</em><span class="sig-paren">)</span></dt>
+<dd><p>Initializes every object of Producer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>queue</strong> &#8211; Queue where random number get put in</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">__module__</code><em class="property"> = 'thread_watchdog'</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Creates random numbers, puts them into the queue and also puts out which number was out into it. If the queue is full this method
+puts out an message!</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">stopping</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Gets called by watchdog to set self.running to false</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt>
+<em class="property">class </em><code class="descclassname">thread_watchdog.</code><code class="descname">Consumer</code><span class="sig-paren">(</span><em>queue</em><span class="sig-paren">)</span></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code>, <a class="reference internal" href="watchdog.html#watchdog.Stoppable" title="watchdog.Stoppable"><code class="xref py py-class docutils literal"><span class="pre">watchdog.Stoppable</span></code></a></p>
+<dl class="attribute">
+<dt>
+<code class="descname">__abstractmethods__</code><em class="property"> = frozenset()</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>queue</em><span class="sig-paren">)</span></dt>
+<dd><p>Initializes every object of Consumer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>queue</strong> &#8211; Queue where numbers get retrieven from</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<code class="descname">__module__</code><em class="property"> = 'thread_watchdog'</em></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>This method receives the numbers from the queue and puts them out into the console. Also if the Queue was empty it&#8217;d put a message into the console also</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="descname">stopping</code><span class="sig-paren">(</span><span class="sig-paren">)</span></dt>
+<dd><p>Gets called by watchdog to set self.running to false</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to thread_watchdog&#8217;s documentation!</a></li>
+      <li>Next: <a href="watchdog.html" title="next chapter">watchdog</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/thread_watchdog.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Martin Woelfer.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
+      
+      |
+      <a href="_sources/thread_watchdog.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
