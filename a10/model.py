@@ -1,3 +1,4 @@
-class model:
+class Model:
     def __init__(self):
-        pass
+        self.points = []
+        self.closes = False
