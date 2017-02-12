@@ -1,0 +1,645 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Game Package &#8212; ipc Client 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ipc Client 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="game-package">
+<h1>Game Package<a class="headerlink" href="#game-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-Game.ServerController">
+<span id="servercontroller-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">ServerController</span></code> Module<a class="headerlink" href="#module-Game.ServerController" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Game.ServerController.CommandType">
+<em class="property">class </em><code class="descclassname">Game.ServerController.</code><code class="descname">CommandType</code><a class="reference internal" href="_modules/Game/ServerController.html#CommandType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.CommandType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.Enum</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="Game.ServerController.FieldType">
+<em class="property">class </em><code class="descclassname">Game.ServerController.</code><code class="descname">FieldType</code><a class="reference internal" href="_modules/Game/ServerController.html#FieldType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.FieldType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.Enum</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="Game.ServerController.ServerController">
+<em class="property">class </em><code class="descclassname">Game.ServerController.</code><code class="descname">ServerController</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PySide.QtGui.QWidget</span></code></p>
+<p>Der Spieleserver</p>
+<dl class="method">
+<dt id="Game.ServerController.ServerController.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new controller with a MyView object
+using the MVC pattern</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> &#8211; </td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.ServerController.ServerController.bind_and_listen">
+<code class="descname">bind_and_listen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController.bind_and_listen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController.bind_and_listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Erzeugt einen neuen Thread, welcher auf eingehende
+Verbindungen wartet.
+:return: None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.ServerController.ServerController.check_position">
+<code class="descname">check_position</code><span class="sig-paren">(</span><em>position</em>, <em>number</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController.check_position"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController.check_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prueft die aktuelle Position und ermittelt, ob das
+Spiel gewonnen oder verloren wurde.
+:param position: Position des Spielers
+:type position: (int, int)
+:param number: Spielernummer (1 oder 2)
+:type number: int
+:return: -1 (verloren), 1 (gewonnen), 0 (weder noch)
+:rtype int</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.ServerController.ServerController.closeEvent">
+<code class="descname">closeEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController.closeEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController.closeEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reagiert auf das Close-Event und beendet offene Verbindungen.
+:param event:
+:return: None</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.cols">
+<code class="descname">cols</code><em class="property"> = 10</em><a class="headerlink" href="#Game.ServerController.ServerController.cols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Game.ServerController.ServerController.draw_map">
+<code class="descname">draw_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController.draw_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController.draw_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zeichnet die Felder in die entsprechenden Widgets.
+:return: None</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.errorsignal">
+<code class="descname">errorsignal</code><em class="property"> = &lt;PySide.QtCore.Signal object at 0x03F13C80&gt;</em><a class="headerlink" href="#Game.ServerController.ServerController.errorsignal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Game.ServerController.ServerController.field_message">
+<code class="descname">field_message</code><span class="sig-paren">(</span><em>position</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController.field_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController.field_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Erzeugt die Nachricht, welche alle sichtabren
+Felder des Spielers anzeigt.
+:param position: Position des jeweiligen Spielers
+:type position: (int, int)
+:return: Nachricht mit sichtbaren Felder
+:rtype: str</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.ServerController.ServerController.game_loop">
+<code class="descname">game_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController.game_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController.game_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bildet die Spielelogik ab und wickelt die Zuege ab.
+:return: None</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.msgsignal">
+<code class="descname">msgsignal</code><em class="property"> = &lt;PySide.QtCore.Signal object at 0x04B59EE0&gt;</em><a class="headerlink" href="#Game.ServerController.ServerController.msgsignal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.pCastle1">
+<code class="descname">pCastle1</code><em class="property"> = &lt;PySide.QtGui.QPalette object at 0x04B671E8&gt;</em><a class="headerlink" href="#Game.ServerController.ServerController.pCastle1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.pCastle2">
+<code class="descname">pCastle2</code><em class="property"> = &lt;PySide.QtGui.QPalette object at 0x04B67210&gt;</em><a class="headerlink" href="#Game.ServerController.ServerController.pCastle2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.pForest">
+<code class="descname">pForest</code><em class="property"> = &lt;PySide.QtGui.QPalette object at 0x04B67260&gt;</em><a class="headerlink" href="#Game.ServerController.ServerController.pForest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.pGrass">
+<code class="descname">pGrass</code><em class="property"> = &lt;PySide.QtGui.QPalette object at 0x04B67238&gt;</em><a class="headerlink" href="#Game.ServerController.ServerController.pGrass" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.pLake">
+<code class="descname">pLake</code><em class="property"> = &lt;PySide.QtGui.QPalette object at 0x04B67288&gt;</em><a class="headerlink" href="#Game.ServerController.ServerController.pLake" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.pMountain">
+<code class="descname">pMountain</code><em class="property"> = &lt;PySide.QtGui.QPalette object at 0x04B672B0&gt;</em><a class="headerlink" href="#Game.ServerController.ServerController.pMountain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.rows">
+<code class="descname">rows</code><em class="property"> = 10</em><a class="headerlink" href="#Game.ServerController.ServerController.rows" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Game.ServerController.ServerController.setup_game">
+<code class="descname">setup_game</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController.setup_game"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController.setup_game" title="Permalink to this definition">¶</a></dt>
+<dd><p>Erzeugt ein neues Spiel und mischt die Felder durch.
+:return: None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.ServerController.ServerController.showError">
+<code class="descname">showError</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerController.html#ServerController.showError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerController.ServerController.showError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zeigt Fehlermeldungen an.
+:param message: Anzuzeigende Nachricht.
+:type message: str
+:return: None</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="Game.ServerController.ServerController.staticMetaObject">
+<code class="descname">staticMetaObject</code><em class="property"> = &lt;PySide.QtCore.QMetaObject object at 0x04B672D8&gt;</em><a class="headerlink" href="#Game.ServerController.ServerController.staticMetaObject" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Game.ServerView">
+<span id="serverview-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">ServerView</span></code> Module<a class="headerlink" href="#module-Game.ServerView" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Game.ServerView.Ui_Form">
+<em class="property">class </em><code class="descclassname">Game.ServerView.</code><code class="descname">Ui_Form</code><a class="reference internal" href="_modules/Game/ServerView.html#Ui_Form"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerView.Ui_Form" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="Game.ServerView.Ui_Form.retranslateUi">
+<code class="descname">retranslateUi</code><span class="sig-paren">(</span><em>Form</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerView.html#Ui_Form.retranslateUi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerView.Ui_Form.retranslateUi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="Game.ServerView.Ui_Form.setupUi">
+<code class="descname">setupUi</code><span class="sig-paren">(</span><em>Form</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/ServerView.html#Ui_Form.setupUi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.ServerView.Ui_Form.setupUi" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-Game.client">
+<span id="client-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">client</span></code> Module<a class="headerlink" href="#module-Game.client" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="Game.client.Client">
+<em class="property">class </em><code class="descclassname">Game.client.</code><code class="descname">Client</code><span class="sig-paren">(</span><em>ip_address</em>, <em>port</em>, <em>map_size</em>, <em>time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="Game.client.Client.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>ip_address</em>, <em>port</em>, <em>map_size</em>, <em>time</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialize member variables</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ip_address</strong> &#8211; ip-address which the client connects to (default=&#8217;localhost&#8217;)</li>
+<li><strong>port</strong> &#8211; port which the client connects to (default=5050)</li>
+<li><strong>map_size</strong> &#8211; size of the map, always square! (default=10)</li>
+<li><strong>time</strong> &#8211; time the client takes in between each turn, in seconds (default=1)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.around_pos">
+<code class="descname">around_pos</code><span class="sig-paren">(</span><em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.around_pos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.around_pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets the positions around a certain field guaranteed in a [0 - map_size] interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pos</strong> &#8211; position of field to be searched in [y,x] list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of fields around pos</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.field_at">
+<code class="descname">field_at</code><span class="sig-paren">(</span><em>pos</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.field_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.field_at" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pos</strong> &#8211; position in [y,x] list</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">string representation of field on the intern map</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.get_directions">
+<code class="descname">get_directions</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.get_directions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.get_directions" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> &#8211; A path of fields which are to be visited</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of directions instead of the direct fields, helps enormously when developing the logic</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.get_graph">
+<code class="descname">get_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.get_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.get_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>With the information of the intern map create a Graph object and fill it with the information
+:return: a graph object filled with the nodes and edges of the intern map</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.get_pos_x">
+<code class="descname">get_pos_x</code><span class="sig-paren">(</span><em>ch_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.get_pos_x"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.get_pos_x" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ch_x</strong> &#8211; x coordinate to be checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">x coordinate of player added with x coordinate of parameter guaranteed in interval [0 - map_size]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.get_pos_y">
+<code class="descname">get_pos_y</code><span class="sig-paren">(</span><em>ch_y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.get_pos_y"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.get_pos_y" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ch_y</strong> &#8211; y coordinate to be checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">y coordinate of player added with y coordinate of parameter guaranteed in interval [0 - map_size]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.get_priority">
+<code class="descname">get_priority</code><span class="sig-paren">(</span><em>field</em>, <em>cords</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.get_priority"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.get_priority" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets the priority of a certain field on a certain cord</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>field</strong> &#8211; string representation of a field</li>
+<li><strong>cords</strong> &#8211; the cords the field is on</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">priority of the field</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.print_map">
+<code class="descname">print_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.print_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.print_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>represents the internal map with borders and coordinate system</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>main method of the client</p>
+<p>connects to the server, and automatically creates data to be sent to server</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Client.update_map">
+<code class="descname">update_map</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Client.update_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Client.update_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>update the intern map with the data received from the server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; data which was sent from the server, &#8216;what the client sees&#8217;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="Game.client.CommandType">
+<em class="property">class </em><code class="descclassname">Game.client.</code><code class="descname">CommandType</code><a class="reference internal" href="_modules/Game/client.html#CommandType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.CommandType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.Enum</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="Game.client.Graph">
+<em class="property">class </em><code class="descclassname">Game.client.</code><code class="descname">Graph</code><a class="reference internal" href="_modules/Game/client.html#Graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Graph class with represent a graph object. A graph is needed in order for the dijkstra algorithm to work correctly
+In a graph, a node is a field, which is connected to other fields. Those connections are colled edges.
+In this case, each field is a tile and is connected to the other sourrounding fields via 4 edges.
+Adding to that, each edge has its own distance, this can be imagined as the &#8216;cost&#8217; which is needed to travel along that edge.
+For example, a mountain is more expensive to travel to than a forest field</p>
+<p>Src code from: <a class="reference external" href="https://gist.github.com/mdsrosa/c71339cb23bc51e711d8">https://gist.github.com/mdsrosa/c71339cb23bc51e711d8</a></p>
+<dl class="method">
+<dt id="Game.client.Graph.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Graph.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Graph.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the Graph object</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Graph.add_edge">
+<code class="descname">add_edge</code><span class="sig-paren">(</span><em>from_node</em>, <em>to_node</em>, <em>distance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Graph.add_edge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Graph.add_edge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an edge to the graph object - A &#8216;connection&#8217;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>from_node</strong> &#8211; The node from which the edge sources from</li>
+<li><strong>to_node</strong> &#8211; The node which is targetet by the source</li>
+<li><strong>distance</strong> &#8211; How far apart those nodes are - The &#8216;price&#8217; - How expensive it is</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="Game.client.Graph.add_node">
+<code class="descname">add_node</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#Graph.add_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.Graph.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a node to the graph object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; the node to be added</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.client.dijkstra">
+<code class="descclassname">Game.client.</code><code class="descname">dijkstra</code><span class="sig-paren">(</span><em>graph</em>, <em>initial</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#dijkstra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.dijkstra" title="Permalink to this definition">¶</a></dt>
+<dd><p>The infamous Dijsktra algorithm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>graph</strong> &#8211; graph object which represents the map in such a form that the dijkstra algorithm can process it</li>
+<li><strong>initial</strong> &#8211; The initial node from which every edge gets returned</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The path which was already visited and the actual path</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Src code from <a class="reference external" href="https://gist.github.com/mdsrosa/c71339cb23bc51e711d8">https://gist.github.com/mdsrosa/c71339cb23bc51e711d8</a></p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.client.shortest_path">
+<code class="descclassname">Game.client.</code><code class="descname">shortest_path</code><span class="sig-paren">(</span><em>graph</em>, <em>origin</em>, <em>destination</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/client.html#shortest_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.client.shortest_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8216;Uses&#8217; the output of the dijstkra function to get the shortets path of two points</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>graph</strong> &#8211; Graph object which represents the map</li>
+<li><strong>origin</strong> &#8211; From where the path sources from</li>
+<li><strong>destination</strong> &#8211; Destination of the path</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A List of how many were already visited and the actual path</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Src code from <a class="reference external" href="https://gist.github.com/mdsrosa/c71339cb23bc51e711d8">https://gist.github.com/mdsrosa/c71339cb23bc51e711d8</a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-Game.generate_modules">
+<span id="generate-modules-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">generate_modules</span></code> Module<a class="headerlink" href="#module-Game.generate_modules" title="Permalink to this headline">¶</a></h2>
+<p>sphinx-autopackage-script</p>
+<p>This script parses a directory tree looking for python modules and packages and
+creates ReST files appropriately to create code documentation with Sphinx.
+It also creates a modules index (named modules.&lt;suffix&gt;).</p>
+<dl class="function">
+<dt id="Game.generate_modules.create_module_file">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">create_module_file</code><span class="sig-paren">(</span><em>package</em>, <em>module</em>, <em>opts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#create_module_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.create_module_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the text of the file and write the file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.create_modules_toc_file">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">create_modules_toc_file</code><span class="sig-paren">(</span><em>master_package</em>, <em>modules</em>, <em>opts</em>, <em>name='modules'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#create_modules_toc_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.create_modules_toc_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the module&#8217;s index.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.create_package_file">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">create_package_file</code><span class="sig-paren">(</span><em>root</em>, <em>master_package</em>, <em>subroot</em>, <em>py_files</em>, <em>opts</em>, <em>subs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#create_package_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.create_package_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the text of the file and write the file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.format_directive">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">format_directive</code><span class="sig-paren">(</span><em>module</em>, <em>package=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#format_directive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.format_directive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the automodule directive and add the options.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.format_heading">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">format_heading</code><span class="sig-paren">(</span><em>level</em>, <em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#format_heading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.format_heading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a heading of &lt;level&gt; [1, 2 or 3 supported].</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.is_excluded">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">is_excluded</code><span class="sig-paren">(</span><em>root</em>, <em>excludes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#is_excluded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.is_excluded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the directory is in the exclude list.</p>
+<dl class="docutils">
+<dt>Note: by having trailing slashes, we avoid common prefix issues, like</dt>
+<dd>e.g. an exlude &#8220;foo&#8221; also accidentally excluding &#8220;foobar&#8221;.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.main">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse and check the command line arguments.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.makename">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">makename</code><span class="sig-paren">(</span><em>package</em>, <em>module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#makename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.makename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join package and module with a dot.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.normalize_excludes">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">normalize_excludes</code><span class="sig-paren">(</span><em>rootpath</em>, <em>excludes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#normalize_excludes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.normalize_excludes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the excluded directory list:
+* must be either an absolute path or start with rootpath,
+* otherwise it is joined with rootpath
+* with trailing slash</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.recurse_tree">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">recurse_tree</code><span class="sig-paren">(</span><em>path</em>, <em>excludes</em>, <em>opts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#recurse_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.recurse_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look for every file in the directory tree and create the corresponding
+ReST files.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.shall_skip">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">shall_skip</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#shall_skip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.shall_skip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if we want to skip this module.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="Game.generate_modules.write_file">
+<code class="descclassname">Game.generate_modules.</code><code class="descname">write_file</code><span class="sig-paren">(</span><em>name</em>, <em>text</em>, <em>opts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/Game/generate_modules.html#write_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#Game.generate_modules.write_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the output file for module/package &lt;name&gt;.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Game Package</a><ul>
+<li><a class="reference internal" href="#module-Game.ServerController"><code class="docutils literal"><span class="pre">ServerController</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-Game.ServerView"><code class="docutils literal"><span class="pre">ServerView</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-Game.client"><code class="docutils literal"><span class="pre">client</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-Game.generate_modules"><code class="docutils literal"><span class="pre">generate_modules</span></code> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/Game.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">ipc Client 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Martin Woelfer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

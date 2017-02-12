@@ -1,0 +1,649 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Game.client &#8212; ipc Client 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ipc Client 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for Game.client</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">socket</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">defaultdict</span><span class="p">,</span>  <span class="n">deque</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+
+
+<span class="c1"># commandtype Enum for decididing direction</span>
+<div class="viewcode-block" id="CommandType"><a class="viewcode-back" href="../../Game.html#Game.client.CommandType">[docs]</a><span class="k">class</span> <span class="nc">CommandType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">UP</span> <span class="o">=</span> <span class="s2">&quot;up&quot;</span>
+    <span class="n">RIGHT</span> <span class="o">=</span> <span class="s2">&quot;right&quot;</span>
+    <span class="n">DOWN</span> <span class="o">=</span> <span class="s2">&quot;down&quot;</span>
+    <span class="n">LEFT</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span></div>
+
+
+<div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../Game.html#Game.client.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Graph class with represent a graph object. A graph is needed in order for the dijkstra algorithm to work correctly</span>
+<span class="sd">    In a graph, a node is a field, which is connected to other fields. Those connections are colled edges.</span>
+<span class="sd">    In this case, each field is a tile and is connected to the other sourrounding fields via 4 edges.</span>
+<span class="sd">    Adding to that, each edge has its own distance, this can be imagined as the &#39;cost&#39; which is needed to travel along that edge.</span>
+<span class="sd">    For example, a mountain is more expensive to travel to than a forest field</span>
+
+<span class="sd">    Src code from: https://gist.github.com/mdsrosa/c71339cb23bc51e711d8</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Graph.__init__"><a class="viewcode-back" href="../../Game.html#Game.client.Graph.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the Graph object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distances</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="Graph.add_node"><a class="viewcode-back" href="../../Game.html#Game.client.Graph.add_node">[docs]</a>    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a node to the graph object</span>
+
+<span class="sd">        :param value: the node to be added</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.add_edge"><a class="viewcode-back" href="../../Game.html#Game.client.Graph.add_edge">[docs]</a>    <span class="k">def</span> <span class="nf">add_edge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">from_node</span><span class="p">,</span> <span class="n">to_node</span><span class="p">,</span> <span class="n">distance</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add an edge to the graph object - A &#39;connection&#39;</span>
+
+<span class="sd">        :param from_node: The node from which the edge sources from</span>
+
+<span class="sd">        :param to_node: The node which is targetet by the source</span>
+
+<span class="sd">        :param distance: How far apart those nodes are - The &#39;price&#39; - How expensive it is</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">from_node</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">to_node</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">from_node</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distances</span><span class="p">[(</span><span class="n">from_node</span><span class="p">,</span> <span class="n">to_node</span><span class="p">)]</span> <span class="o">=</span> <span class="n">distance</span></div></div>
+
+<div class="viewcode-block" id="dijkstra"><a class="viewcode-back" href="../../Game.html#Game.client.dijkstra">[docs]</a><span class="k">def</span> <span class="nf">dijkstra</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">initial</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    The infamous Dijsktra algorithm</span>
+
+<span class="sd">    :param graph: graph object which represents the map in such a form that the dijkstra algorithm can process it</span>
+
+<span class="sd">    :param initial: The initial node from which every edge gets returned</span>
+
+<span class="sd">    :return: The path which was already visited and the actual path</span>
+
+<span class="sd">    Src code from https://gist.github.com/mdsrosa/c71339cb23bc51e711d8</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="p">{</span><span class="n">initial</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="n">nodes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="n">nodes</span><span class="p">:</span>
+        <span class="n">min_node</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">visited</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">min_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">min_node</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="k">elif</span> <span class="n">visited</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">visited</span><span class="p">[</span><span class="n">min_node</span><span class="p">]:</span>
+                    <span class="n">min_node</span> <span class="o">=</span> <span class="n">node</span>
+        <span class="k">if</span> <span class="n">min_node</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="n">nodes</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">min_node</span><span class="p">)</span>
+        <span class="n">current_weight</span> <span class="o">=</span> <span class="n">visited</span><span class="p">[</span><span class="n">min_node</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">min_node</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">weight</span> <span class="o">=</span> <span class="n">current_weight</span> <span class="o">+</span> <span class="n">graph</span><span class="o">.</span><span class="n">distances</span><span class="p">[(</span><span class="n">min_node</span><span class="p">,</span> <span class="n">edge</span><span class="p">)]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">edge</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">visited</span> <span class="ow">or</span> <span class="n">weight</span> <span class="o">&lt;</span> <span class="n">visited</span><span class="p">[</span><span class="n">edge</span><span class="p">]:</span>
+                <span class="n">visited</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight</span>
+                <span class="n">path</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span> <span class="o">=</span> <span class="n">min_node</span>
+
+    <span class="k">return</span> <span class="n">visited</span><span class="p">,</span> <span class="n">path</span></div>
+
+<div class="viewcode-block" id="shortest_path"><a class="viewcode-back" href="../../Game.html#Game.client.shortest_path">[docs]</a><span class="k">def</span> <span class="nf">shortest_path</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">destination</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    &#39;Uses&#39; the output of the dijstkra function to get the shortets path of two points</span>
+
+<span class="sd">    :param graph: Graph object which represents the map</span>
+
+<span class="sd">    :param origin: From where the path sources from</span>
+
+<span class="sd">    :param destination: Destination of the path</span>
+
+<span class="sd">    :return: A List of how many were already visited and the actual path</span>
+
+<span class="sd">    Src code from https://gist.github.com/mdsrosa/c71339cb23bc51e711d8</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">visited</span><span class="p">,</span> <span class="n">paths</span> <span class="o">=</span> <span class="n">dijkstra</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+    <span class="n">full_path</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">_destination</span> <span class="o">=</span> <span class="n">paths</span><span class="p">[</span><span class="n">destination</span><span class="p">]</span>
+
+    <span class="k">while</span> <span class="n">_destination</span> <span class="o">!=</span> <span class="n">origin</span><span class="p">:</span>
+        <span class="n">full_path</span><span class="o">.</span><span class="n">appendleft</span><span class="p">(</span><span class="n">_destination</span><span class="p">)</span>
+        <span class="n">_destination</span> <span class="o">=</span> <span class="n">paths</span><span class="p">[</span><span class="n">_destination</span><span class="p">]</span>
+
+    <span class="n">full_path</span><span class="o">.</span><span class="n">appendleft</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+    <span class="n">full_path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">visited</span><span class="p">[</span><span class="n">destination</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span></div>
+
+<span class="c1"># client which connects to servera nd sends and receives data</span>
+<div class="viewcode-block" id="Client"><a class="viewcode-back" href="../../Game.html#Game.client.Client">[docs]</a><span class="k">class</span> <span class="nc">Client</span><span class="p">:</span>
+<div class="viewcode-block" id="Client.__init__"><a class="viewcode-back" href="../../Game.html#Game.client.Client.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip_address</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">map_size</span><span class="p">,</span> <span class="n">time</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        initialize member variables</span>
+
+<span class="sd">        :param ip_address: ip-address which the client connects to (default=&#39;localhost&#39;)</span>
+
+<span class="sd">        :param port: port which the client connects to (default=5050)</span>
+
+<span class="sd">        :param map_size: size of the map, always square! (default=10)</span>
+
+<span class="sd">        :param time: time the client takes in between each turn, in seconds (default=1)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ip_address</span> <span class="o">=</span> <span class="n">ip_address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">=</span> <span class="n">map_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">turns</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_bomb</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">)]</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">curr_path</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">visited</span> <span class="o">=</span> <span class="p">[]</span></div>
+
+<div class="viewcode-block" id="Client.update_map"><a class="viewcode-back" href="../../Game.html#Game.client.Client.update_map">[docs]</a>    <span class="k">def</span> <span class="nf">update_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        update the intern map with the data received from the server</span>
+
+<span class="sd">        :param data: data which was sent from the server, &#39;what the client sees&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># because you see different depending on the field you&#39;re standing, the amount of rows have to be calculated</span>
+        <span class="c1"># i.e. when you&#39;re standing on a forest, you&#39;ll have 3 rows, on gras you&#39;ll have 5 rows and on mountains you&#39;ll see 7 rows</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">)))</span>
+
+        <span class="c1"># this algorithm updates the map, help from Mladen Vojnovic</span>
+
+        <span class="c1"># define start cords</span>
+        <span class="n">cords_start</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># set x-coord of start-coords</span>
+        <span class="n">cords_start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">rows</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># because data always saves each field with 2 characters, we need 2 variables to correctly iterate through whole data</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="c1"># set y-coord of start-coords</span>
+            <span class="n">cords_start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">rows</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+                <span class="c1"># check if the map wasn&#39;t already updated on said position</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pos_y</span><span class="p">(</span><span class="n">cords_start</span><span class="p">[</span><span class="mi">1</span><span class="p">])][</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pos_x</span><span class="p">(</span><span class="n">cords_start</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># set position of map to position of data</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pos_y</span><span class="p">(</span><span class="n">cords_start</span><span class="p">[</span><span class="mi">1</span><span class="p">])][</span><span class="bp">self</span><span class="o">.</span><span class="n">get_pos_x</span><span class="p">(</span><span class="n">cords_start</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span> <span class="o">*</span> <span class="mi">2</span><span class="p">:</span><span class="n">j</span> <span class="o">*</span> <span class="mi">2</span><span class="p">]</span>
+                <span class="c1"># increment x-coord of start-coords</span>
+                <span class="n">cords_start</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># increment iterate variables</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="c1"># increment y-coord of start-coords</span>
+            <span class="n">cords_start</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Client.get_graph"><a class="viewcode-back" href="../../Game.html#Game.client.Client.get_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        With the information of the intern map create a Graph object and fill it with the information</span>
+<span class="sd">        :return: a graph object filled with the nodes and edges of the intern map</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># create a new graph object to represent the map in a way so that the dijsktra alogirithm can be applied</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+        <span class="c1"># iterate trough the map</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">):</span>
+                <span class="c1"># only put fields in the graph that were already seen</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># add the field to the graph as a node =&gt; &#39;Knotenpunkt&#39; =&gt; basically just a field in the graph</span>
+                    <span class="n">g</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="nb">str</span><span class="p">([</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]))</span>
+                    <span class="c1"># iterate through neighbours</span>
+                    <span class="k">for</span> <span class="n">neighbour</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">around_pos</span><span class="p">([</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]):</span>
+                        <span class="c1"># only go through neighbours whose field is known</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_at</span><span class="p">(</span><span class="n">neighbour</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="c1"># the distance is how much it &#39;costs&#39; to go to a certain field</span>
+                            <span class="c1"># for example, it is more &#39;expensive&#39; to go on a mountain than it&#39;d be to go on a grass field</span>
+                            <span class="n">distance</span> <span class="o">=</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_at</span><span class="p">(</span><span class="n">neighbour</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;L &#39;</span><span class="p">:</span>
+                                <span class="n">distance</span> <span class="o">=</span> <span class="mi">10000</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_at</span><span class="p">(</span><span class="n">neighbour</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;M &#39;</span><span class="p">:</span>
+                                <span class="n">distance</span> <span class="o">=</span> <span class="mi">2</span>
+                            <span class="c1"># add the edge =&gt; &#39;Verbindung&#39; =&gt; basically how 2 nodes are connected together, and how expensive it is to go there</span>
+                            <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="nb">str</span><span class="p">([</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]),</span> <span class="nb">str</span><span class="p">(</span><span class="n">neighbour</span><span class="p">),</span> <span class="n">distance</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">g</span></div>
+
+<div class="viewcode-block" id="Client.get_pos_y"><a class="viewcode-back" href="../../Game.html#Game.client.Client.get_pos_y">[docs]</a>    <span class="k">def</span> <span class="nf">get_pos_y</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ch_y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param ch_y: y coordinate to be checked</span>
+
+<span class="sd">        :return: y coordinate of player added with y coordinate of parameter guaranteed in interval [0 - map_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newY</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">ch_y</span>
+        <span class="k">if</span> <span class="n">newY</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">newY</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span>
+        <span class="k">elif</span> <span class="n">newY</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">newY</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span>
+        <span class="k">return</span> <span class="n">newY</span></div>
+
+<div class="viewcode-block" id="Client.get_pos_x"><a class="viewcode-back" href="../../Game.html#Game.client.Client.get_pos_x">[docs]</a>    <span class="k">def</span> <span class="nf">get_pos_x</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ch_y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param ch_x: x coordinate to be checked</span>
+
+<span class="sd">        :return: x coordinate of player added with x coordinate of parameter guaranteed in interval [0 - map_size]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">newX</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">ch_y</span>
+        <span class="k">if</span> <span class="n">newX</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">newX</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span>
+        <span class="k">elif</span> <span class="n">newX</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">newX</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span>
+        <span class="k">return</span> <span class="n">newX</span></div>
+
+<div class="viewcode-block" id="Client.print_map"><a class="viewcode-back" href="../../Game.html#Game.client.Client.print_map">[docs]</a>    <span class="k">def</span> <span class="nf">print_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        represents the internal map with borders and coordinate system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y_number</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># print upper numbers</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;  &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="c1"># print upper border</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;---&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">:</span>
+            <span class="c1"># print left border and number</span>
+            <span class="k">if</span> <span class="n">y_number</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_number</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; | &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y_number</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;| &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="c1"># print actual map</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;0  &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">()</span>
+            <span class="n">y_number</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Client.get_priority"><a class="viewcode-back" href="../../Game.html#Game.client.Client.get_priority">[docs]</a>    <span class="k">def</span> <span class="nf">get_priority</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">cords</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gets the priority of a certain field on a certain cord</span>
+
+<span class="sd">        :param field: string representation of a field</span>
+
+<span class="sd">        :param cords: the cords the field is on</span>
+
+<span class="sd">        :return: priority of the field</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># if forest =&gt; low priority</span>
+        <span class="k">if</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;F &quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="c1"># if gras =&gt; medium priority</span>
+        <span class="k">elif</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;G &quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">2</span>
+        <span class="c1"># if mountain =&gt; higher porioty</span>
+        <span class="k">elif</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;M &quot;</span> <span class="ow">and</span> <span class="n">cords</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">3</span>
+        <span class="c1"># if bomb and bomb wasn&#39;t already picked up =&gt; highest priority</span>
+        <span class="k">elif</span> <span class="n">field</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_bomb</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">4</span>
+        <span class="c1"># if bomb and bomb was already picked up =&gt; lowest priority</span>
+        <span class="k">elif</span> <span class="n">field</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_bomb</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="c1"># if castle and not own castle (own castle is always on [0,0]) and bomb was already picked up =&gt; highest priority</span>
+        <span class="k">elif</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;C &quot;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">cords</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_bomb</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">4</span>
+        <span class="c1"># if castle and not own castle but bomb not picked up =&gt; lowest priority</span>
+        <span class="k">elif</span> <span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;C &quot;</span> <span class="ow">and</span> <span class="n">cords</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="c1"># any other cases =&gt; lowest priority</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="Client.field_at"><a class="viewcode-back" href="../../Game.html#Game.client.Client.field_at">[docs]</a>    <span class="k">def</span> <span class="nf">field_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param pos: position in [y,x] list</span>
+
+<span class="sd">        :return: string representation of field on the intern map</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Client.around_pos"><a class="viewcode-back" href="../../Game.html#Game.client.Client.around_pos">[docs]</a>    <span class="k">def</span> <span class="nf">around_pos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gets the positions around a certain field guaranteed in a [0 - map_size] interval</span>
+
+<span class="sd">        :param pos: position of field to be searched in [y,x] list</span>
+
+<span class="sd">        :return: list of fields around pos</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">down</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">down</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">up</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">up</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">right</span> <span class="o">=</span> <span class="p">[</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">up</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">down</span><span class="p">,</span> <span class="n">left</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Client.get_directions"><a class="viewcode-back" href="../../Game.html#Game.client.Client.get_directions">[docs]</a>    <span class="k">def</span> <span class="nf">get_directions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param path: A path of fields which are to be visited</span>
+
+<span class="sd">        :return: A list of directions instead of the direct fields, helps enormously when developing the logic</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># the direciton list which is to be filled</span>
+        <span class="n">dirs</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># iterate through the path</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">path</span><span class="p">)):</span>
+            <span class="c1"># get the direction between the src and target field</span>
+            <span class="n">src</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">4</span><span class="p">])]</span>
+            <span class="n">targ</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]),</span><span class="nb">int</span><span class="p">(</span><span class="n">path</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">4</span><span class="p">])]</span>
+
+            <span class="c1"># this works because in the path each distance is always either 1, -1 in x or 1,-1 in y... edge cases are when it goes &#39;above&#39; the map_size, which also gets checked</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">targ</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">src</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">targ</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">src</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">((</span><span class="n">targ</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">src</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">targ</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">src</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;left&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">((</span><span class="n">targ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">src</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">targ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">src</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="o">-</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="o">-</span><span class="mi">1</span><span class="p">)):</span>
+                <span class="n">dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;down&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="p">((</span><span class="n">targ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">src</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="ow">or</span> <span class="p">((</span><span class="n">targ</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">src</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;up&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dirs</span></div>
+
+
+<div class="viewcode-block" id="Client.start"><a class="viewcode-back" href="../../Game.html#Game.client.Client.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        main method of the client</span>
+
+<span class="sd">        connects to the server, and automatically creates data to be sent to server</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">SOCK_STREAM</span><span class="p">)</span> <span class="k">as</span> <span class="n">clientsocket</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="c1"># Verbindung herstellen (Gegenpart: accept() )</span>
+                <span class="n">clientsocket</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">ip_address</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span>
+                <span class="n">clientsocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="s2">&quot;mwoelfer01&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                <span class="c1"># Antwort empfangen</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">clientsocket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">data</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span><span class="p">:</span>
+                    <span class="c1"># Schließen, falls Verbindung geschlossen wurde</span>
+                    <span class="n">clientsocket</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="c1"># receive the data</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">clientsocket</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+                        <span class="c1"># if there is some kind of error, close the connection</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Connection closed&quot;</span><span class="p">)</span>
+                            <span class="k">break</span>
+
+                        <span class="c1"># if the reply wasn&#39;t info on how much the player sees, it has to be losing/winning message</span>
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">18</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">50</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">98</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="kc">True</span>
+
+                        <span class="c1"># take current view and update intern map with it</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">update_map</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                        <span class="c1"># print the intern map</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">print_map</span><span class="p">()</span>
+                        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                            <span class="c1"># get the string representation of the field the player stands on</span>
+                            <span class="n">player_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">)</span>
+
+                            <span class="c1"># get cords and field type of each field that the player is being surrounded by</span>
+                            <span class="n">cords_up</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">around_pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                            <span class="n">up_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_at</span><span class="p">(</span><span class="n">cords_up</span><span class="p">)</span>
+
+                            <span class="n">cords_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">around_pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                            <span class="n">right_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_at</span><span class="p">(</span><span class="n">cords_right</span><span class="p">)</span>
+
+                            <span class="n">cords_down</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">around_pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">)[</span><span class="mi">2</span><span class="p">]</span>
+                            <span class="n">down_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_at</span><span class="p">(</span><span class="n">cords_down</span><span class="p">)</span>
+
+                            <span class="n">cords_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">around_pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
+                            <span class="n">left_field</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">field_at</span><span class="p">(</span><span class="n">cords_left</span><span class="p">)</span>
+
+                            <span class="c1"># print out basic information for debugging</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Player: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">))</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hat Bombe: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">has_bomb</span><span class="p">))</span>
+
+                            <span class="c1"># if the player stands on the bomb, set the class attribute to True</span>
+                            <span class="k">if</span> <span class="n">player_field</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">has_bomb</span> <span class="o">=</span> <span class="kc">True</span>
+
+                            <span class="c1"># the msg which is then to be sent to the server</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="c1"># mode 0 means that nothing important was found yet and mountains / bombs / castles are being searched</span>
+                                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">)):</span>
+                                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">)):</span>
+                                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">],</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">])</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">1</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">curr_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_directions</span><span class="p">(</span><span class="n">shortest_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">(),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">),</span><span class="nb">str</span><span class="p">([</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]))[</span><span class="mi">1</span><span class="p">])</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]</span>
+                                            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">],[</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">2</span>
+                                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span> <span class="o">!=</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]:</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">curr_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_directions</span><span class="p">(</span><span class="n">shortest_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">(),</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">),</span><span class="nb">str</span><span class="p">([</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]))[</span><span class="mi">1</span><span class="p">])</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]</span>
+                                            <span class="k">else</span><span class="p">:</span>
+                                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                                    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;right&#39;</span>
+                                                <span class="k">else</span><span class="p">:</span>
+                                                    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;down&#39;</span>
+
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                                <span class="c1"># mode 2 means that a mountain was found, but if a priority 4 thing (bomb/castle) gets seen the target is immediately switched</span>
+                                <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">)):</span>
+                                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">)):</span>
+                                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_priority</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">[</span><span class="n">y</span><span class="p">][</span><span class="n">x</span><span class="p">],</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">])</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">1</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">curr_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_directions</span><span class="p">(</span><span class="n">shortest_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_graph</span><span class="p">(),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">),</span><span class="nb">str</span><span class="p">([</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]))[</span><span class="mi">1</span><span class="p">])</span>
+                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">j</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_path</span><span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">visited</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">0</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+                                    <span class="k">else</span><span class="p">:</span>
+                                        <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_path</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">]</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="c1"># if mode 1 is entered, it means that something important was found with a set path</span>
+                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">j</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_path</span><span class="p">):</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="mi">0</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Remaining Path: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">curr_path</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">:]))</span>
+                                    <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">curr_path</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">j</span><span class="p">]</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                            <span class="bp">self</span><span class="o">.</span><span class="n">i</span><span class="o">+=</span><span class="mi">1</span>
+                            <span class="c1">#msg = random.choice([&#39;right&#39;,&#39;left&#39;,&#39;up&#39;,&#39;down&#39;])</span>
+
+                            <span class="c1"># print out the amount turns that were taken that game</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Anzahl der Züge: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">turns</span><span class="p">))</span>
+                            <span class="c1"># sleep the amount that specified when starting the client</span>
+                            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+                            <span class="c1"># if the choice was up</span>
+                            <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;up&quot;</span><span class="p">:</span>
+                                <span class="c1"># if the desired field was a lake, chose another field</span>
+                                <span class="k">if</span> <span class="n">up_field</span> <span class="o">!=</span> <span class="s2">&quot;L &quot;</span><span class="p">:</span>
+                                    <span class="c1"># make sure player cords only go from [0 - map_size]</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">turns</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">clientsocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">CommandType</span><span class="o">.</span><span class="n">UP</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                                    <span class="k">break</span>
+                            <span class="c1"># if the choice was down</span>
+                            <span class="k">elif</span> <span class="n">msg</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;down&quot;</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">down_field</span> <span class="o">!=</span> <span class="s2">&quot;L &quot;</span><span class="p">:</span>
+                                    <span class="c1"># make sure player cords only go from [0 - map_size]</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">turns</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">clientsocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">CommandType</span><span class="o">.</span><span class="n">DOWN</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                                    <span class="k">break</span>
+                            <span class="c1"># if the choice was left</span>
+                            <span class="k">elif</span> <span class="n">msg</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;left&quot;</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">left_field</span> <span class="o">!=</span> <span class="s2">&quot;L &quot;</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">turns</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">clientsocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">CommandType</span><span class="o">.</span><span class="n">LEFT</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                                    <span class="k">break</span>
+                            <span class="c1"># if the choice was right</span>
+                            <span class="k">elif</span> <span class="n">msg</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;right&quot;</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">right_field</span> <span class="o">!=</span> <span class="s2">&quot;L &quot;</span><span class="p">:</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">cords_player</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_size</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">turns</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">clientsocket</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">CommandType</span><span class="o">.</span><span class="n">RIGHT</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+                                    <span class="k">break</span>
+            <span class="k">except</span> <span class="n">socket</span><span class="o">.</span><span class="n">error</span> <span class="k">as</span> <span class="n">serr</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Socket error: &quot;</span> <span class="o">+</span> <span class="n">serr</span><span class="o">.</span><span class="n">strerror</span><span class="p">)</span></div></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># initialize Argumentparser with fitting description</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Client solves the puzzle game on its own&#39;</span><span class="p">)</span>
+    <span class="c1"># add arguments</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-i&quot;</span><span class="p">,</span><span class="s2">&quot;--ip-address&quot;</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">&quot;Address of the server (default=&#39;localhost&#39;)&quot;</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-p&quot;</span><span class="p">,</span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">&quot;Port of the server (default=&#39;5050&#39;)&quot;</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mi">5050</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-r&quot;</span><span class="p">,</span><span class="s2">&quot;--rows&quot;</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">&quot;rows of the server map(square) (default=&#39;10&#39;)&quot;</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;-t&quot;</span><span class="p">,</span><span class="s2">&quot;--time&quot;</span><span class="p">,</span><span class="n">help</span><span class="o">=</span><span class="s2">&quot;time between each turn (default=0.01&quot;</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span><span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="c1"># parse arguments</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="c1"># initialize client with parameters</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">ip_address</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">rows</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+    <span class="c1"># start the client</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">ipc Client 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Martin Woelfer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
