@@ -282,6 +282,23 @@ class Client:
             print()
             y_number += 1
 
+
+    def get_value(self, cords, view):
+        """
+        :param cords: amount of fields that aren't already seen around this field
+
+        :param view: the amount of fields which get seen in each direction
+
+        :return: the amount of fields labeled with '0' in order to see how much 'value' it'd be to go there
+
+        """
+        value = 0
+        for y in range((cords[0]-view)%self.map_size,(cords[0]+(view+1))%self.map_size):
+            for x in range((cords[1]-view)%self.map_size,(cords[1]+(view+1))%self.map_size):
+                if self.map[y][x] == 0:
+                    value += 1
+        return value
+
     def get_priority(self, field, cords):
         """
         gets the priority of a certain field on a certain cord
@@ -293,13 +310,16 @@ class Client:
         :return: priority of the field
         """
         # if forest => low priority
+
+        value_mountain = self.get_value(cords,3)
+
         if field == "F ":
             return 1
         # if gras => medium priority
         elif field == "G ":
             return 2
         # if mountain => higher porioty
-        elif field == "M " and cords not in self.visited:
+        elif field == "M " and cords not in self.visited and (value_mountain > 30 and value_mountain != 0):
             return 3
         # if bomb and bomb wasn't already picked up => highest priority
         elif field[1] == "B" and not self.has_bomb:
@@ -445,20 +465,23 @@ class Client:
                             if player_field[1] == "B":
                                 self.has_bomb = True
 
+
                             # the msg which is then to be sent to the server
                             msg = ""
                             if self.mode == 0:
                                 # mode 0 means that nothing important was found yet and mountains / bombs / castles are being searched
                                 for y in range(len(self.map)):
+                                    curr_value = 0
                                     for x in range(len(self.map)):
                                         if self.map[y][x] != 0:
                                             if self.get_priority(self.map[y][x], [y, x]) == 4:
                                                 self.mode = 1
                                                 self.curr_path = self.get_directions(shortest_path(self.get_graph(),str(self.cords_player),str([y,x]))[1])
                                                 self.target = [y,x]
-                                            elif self.get_priority(self.map[y][x],[y,x]) == 3:
+                                            elif self.get_priority(self.map[y][x],[y, x]) == 3:
                                                 self.mode = 2
-                                                if self.cords_player != [y,x]:
+                                                if self.get_value([y,x],3) > curr_value:
+                                                    curr_value = self.get_value([y,x],3)
                                                     self.curr_path = self.get_directions(shortest_path(self.get_graph(), str(self.cords_player),str([y, x]))[1])
                                                     self.target = [y,x]
                                             else:
@@ -499,6 +522,7 @@ class Client:
 
                             # print out the amount turns that were taken that game
                             print("Anzahl der Züge: " + str(self.turns))
+
                             # sleep the amount that specified when starting the client
                             time.sleep(self.time)
                             # if the choice was up
