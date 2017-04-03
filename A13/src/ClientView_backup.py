@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'client.ui'
 #
-# Created: Tue Mar 14 22:36:16 2017
+# Created: Wed Mar  8 09:31:21 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.4
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,27 +12,14 @@ from PySide import QtCore, QtGui
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(786, 400)
-        Form.setMinimumSize(QtCore.QSize(786, 400))
-        Form.setMaximumSize(QtCore.QSize(786, 400))
+        Form.resize(786, 165)
+        Form.setMinimumSize(QtCore.QSize(786, 165))
+        Form.setMaximumSize(QtCore.QSize(786, 165))
         self.layoutWidget = QtGui.QWidget(Form)
-        self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 768, 186))
+        self.layoutWidget.setGeometry(QtCore.QRect(10, 10, 766, 145))
         self.layoutWidget.setObjectName("layoutWidget")
-        self.verticalLayout_5 = QtGui.QVBoxLayout(self.layoutWidget)
-        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_5.setObjectName("verticalLayout_5")
-        self.header_label = QtGui.QLabel(self.layoutWidget)
-        self.header_label.setEnabled(True)
-        font = QtGui.QFont()
-        font.setPointSize(20)
-        font.setWeight(75)
-        font.setBold(True)
-        self.header_label.setFont(font)
-        self.header_label.setText("")
-        self.header_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.header_label.setObjectName("header_label")
-        self.verticalLayout_5.addWidget(self.header_label)
-        self.verticalLayout_4 = QtGui.QVBoxLayout()
+        self.verticalLayout_4 = QtGui.QVBoxLayout(self.layoutWidget)
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_4.setObjectName("verticalLayout_4")
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -98,22 +85,6 @@ class Ui_Form(object):
         self.verticalLayout_3.addWidget(self.pushButton_9)
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
         self.verticalLayout_4.addLayout(self.horizontalLayout_2)
-        self.verticalLayout_5.addLayout(self.verticalLayout_4)
-        self.widget = QtGui.QWidget(Form)
-        self.widget.setGeometry(QtCore.QRect(10, 200, 771, 194))
-        self.widget.setObjectName("widget")
-        self.horizontalLayout_5 = QtGui.QHBoxLayout(self.widget)
-        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        self.ausgabe_presse = QtGui.QTextBrowser(self.widget)
-        self.ausgabe_presse.setObjectName("ausgabe_presse")
-        self.horizontalLayout_5.addWidget(self.ausgabe_presse)
-        self.ausgabe_standard = QtGui.QTextBrowser(self.widget)
-        self.ausgabe_standard.setObjectName("ausgabe_standard")
-        self.horizontalLayout_5.addWidget(self.ausgabe_standard)
-        self.ausgabe_kurier = QtGui.QTextBrowser(self.widget)
-        self.ausgabe_kurier.setObjectName("ausgabe_kurier")
-        self.horizontalLayout_5.addWidget(self.ausgabe_kurier)
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)

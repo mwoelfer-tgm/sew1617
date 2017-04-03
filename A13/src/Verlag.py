@@ -3,10 +3,11 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 from src.VerlagView import *
 
+# verlag implements Observable, there is nothing that has to be changed for this exercise
 class Verlag(Observable):
-    def __init__(self):
-        pass
+    pass
 
+# class which controlls GUI of verlag
 class VerlagController(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -14,8 +15,5 @@ class VerlagController(QWidget):
         self.__gui = Ui_Form()
         self.__gui.setupUi(self)
 
-        self.__textbrowsers = {'Presse': self.__gui.textBrowser, 'Standard': self.__gui.textBrowser_2,
+        self.textbrowsers = {'Presse': self.__gui.textBrowser, 'Standard': self.__gui.textBrowser_2,
                                'Kurier': self.__gui.textBrowser_3}
-
-        for browser in self.__textbrowsers.values():
-            browser.setText("test")
