@@ -1,0 +1,444 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>src.engines &#8212; A15 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../modules.html">A15 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for src.engines</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">engine</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">zipfile</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">from</span> <span class="nn">tarfile</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">zlib</span>
+<span class="kn">import</span> <span class="nn">bz2</span>
+<span class="kn">import</span> <span class="nn">lzma</span>
+
+
+<div class="viewcode-block" id="TarGZIP"><a class="viewcode-back" href="../../src.html#src.engines.TarGZIP">[docs]</a><span class="k">class</span> <span class="nc">TarGZIP</span><span class="p">(</span><span class="n">ArchiveEngine</span><span class="p">):</span>
+<div class="viewcode-block" id="TarGZIP.__init__"><a class="viewcode-back" href="../../src.html#src.engines.TarGZIP.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class Archives the data via the TAR class with the GZIP Method</span>
+
+<span class="sd">        More here: https://docs.python.org/3/library/tarfile.html</span>
+
+<span class="sd">        :param filename: Name of the archive</span>
+
+<span class="sd">        :param dest: Where the archive is going to be placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveEngine</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.tar.gz&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Useful description of the Engine used</span>
+
+<span class="sd">        :return: String with a description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;This engine uses GZIP for compression&quot;</span>
+
+<div class="viewcode-block" id="TarGZIP.write"><a class="viewcode-back" href="../../src.html#src.engines.TarGZIP.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to a archive file</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the directory with os.walk() =&gt; Can iterate through it with a truple</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="c1"># get the name of the archive to compare it to the current file which gets iterated through to avoid endless recursion</span>
+        <span class="n">archive_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c1"># open a TarFile in &#39;Write-mode&#39;</span>
+        <span class="k">with</span> <span class="n">TarFile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w:gz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mytar</span><span class="p">:</span>
+            <span class="c1"># src: http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/</span>
+            <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="c1"># check if current file equals the archive which gets created to avoid recursion</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_name</span> <span class="o">==</span> <span class="n">filename</span><span class="p">:</span> <span class="n">mytar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div></div>
+
+
+
+<div class="viewcode-block" id="ZipStored"><a class="viewcode-back" href="../../src.html#src.engines.ZipStored">[docs]</a><span class="k">class</span> <span class="nc">ZipStored</span><span class="p">(</span><span class="n">ArchiveEngine</span><span class="p">):</span>
+<div class="viewcode-block" id="ZipStored.__init__"><a class="viewcode-back" href="../../src.html#src.engines.ZipStored.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class Archives the data via the ZIP class with the no compression</span>
+
+<span class="sd">        More here: https://docs.python.org/3/library/zipfile.html</span>
+
+<span class="sd">        :param filename: Name of the archive</span>
+
+<span class="sd">        :param dest: Where the archive is going to be placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveEngine</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.zip&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Useful description of the Engine used</span>
+
+<span class="sd">        :return: String with a description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;This engine doesn&#39;t use compression&quot;</span>
+
+<div class="viewcode-block" id="ZipStored.write"><a class="viewcode-back" href="../../src.html#src.engines.ZipStored.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to a archive file</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the directory with os.walk() =&gt; Can iterate through it with a truple</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="c1"># get the name of the archive to compare it to the current file which gets iterated through to avoid endless recursion</span>
+        <span class="n">archive_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c1"># open a ZipFile in &#39;Write-mode&#39;</span>
+        <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_STORED</span><span class="p">,</span> <span class="n">allowZip64</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">myzip</span><span class="p">:</span>
+            <span class="c1"># src: http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/</span>
+            <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">:</span>
+                <span class="n">myzip</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="c1"># check if current file equals the archive which gets created to avoid recursion</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_name</span> <span class="o">==</span> <span class="n">filename</span><span class="p">:</span> <span class="n">myzip</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="ZipLZMA"><a class="viewcode-back" href="../../src.html#src.engines.ZipLZMA">[docs]</a><span class="k">class</span> <span class="nc">ZipLZMA</span><span class="p">(</span><span class="n">ArchiveEngine</span><span class="p">):</span>
+<div class="viewcode-block" id="ZipLZMA.__init__"><a class="viewcode-back" href="../../src.html#src.engines.ZipLZMA.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class Archives the data via the ZIP class with the LZMA Method</span>
+
+<span class="sd">        More here: https://docs.python.org/3/library/tarfile.html</span>
+
+<span class="sd">        :param filename: Name of the archive</span>
+
+<span class="sd">        :param dest: Where the archive is going to be placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveEngine</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.7z&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Useful description of the Engine used</span>
+
+<span class="sd">        :return: String with a description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;This engine uses LZMA for compression&quot;</span>
+
+<div class="viewcode-block" id="ZipLZMA.write"><a class="viewcode-back" href="../../src.html#src.engines.ZipLZMA.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to a archive file</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the directory with os.walk() =&gt; Can iterate through it with a truple</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="c1"># get the name of the archive to compare it to the current file which gets iterated through to avoid endless recursion</span>
+        <span class="n">archive_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c1"># open a ZipFile in &#39;Write-mode&#39;</span>
+        <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_LZMA</span><span class="p">,</span> <span class="n">allowZip64</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">myzip</span><span class="p">:</span>
+            <span class="c1"># src: http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/</span>
+            <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">:</span>
+                <span class="n">myzip</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="c1"># check if current file equals the archive which gets created to avoid recursion</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_name</span> <span class="o">==</span> <span class="n">filename</span><span class="p">:</span> <span class="n">myzip</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div></div>
+
+<div class="viewcode-block" id="TarStored"><a class="viewcode-back" href="../../src.html#src.engines.TarStored">[docs]</a><span class="k">class</span> <span class="nc">TarStored</span><span class="p">(</span><span class="n">ArchiveEngine</span><span class="p">):</span>
+<div class="viewcode-block" id="TarStored.__init__"><a class="viewcode-back" href="../../src.html#src.engines.TarStored.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class Archives the data via the TAR class with no compression</span>
+
+<span class="sd">        More here: https://docs.python.org/3/library/tarfile.html</span>
+
+<span class="sd">        :param filename: Name of the archive</span>
+
+<span class="sd">        :param dest: Where the archive is going to be placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveEngine</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.tar&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Useful description of the Engine used</span>
+
+<span class="sd">        :return: String with a description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;This engine doesn&#39;t use compression&quot;</span>
+
+<div class="viewcode-block" id="TarStored.write"><a class="viewcode-back" href="../../src.html#src.engines.TarStored.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to a archive file</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the directory with os.walk() =&gt; Can iterate through it with a truple</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="c1"># get the name of the archive to compare it to the current file which gets iterated through to avoid endless recursion</span>
+        <span class="n">archive_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c1"># open a Tar File in &#39;write-mode&#39;</span>
+        <span class="k">with</span> <span class="n">TarFile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mytar</span><span class="p">:</span>
+            <span class="c1"># src: http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/</span>
+            <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="c1"># check if current file equals the archive which gets created to avoid recursion</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_name</span> <span class="o">==</span> <span class="n">filename</span><span class="p">:</span> <span class="n">mytar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="ZipBzip2"><a class="viewcode-back" href="../../src.html#src.engines.ZipBzip2">[docs]</a><span class="k">class</span> <span class="nc">ZipBzip2</span><span class="p">(</span><span class="n">ArchiveEngine</span><span class="p">):</span>
+<div class="viewcode-block" id="ZipBzip2.__init__"><a class="viewcode-back" href="../../src.html#src.engines.ZipBzip2.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class Archives the data via the ZIP class with the BZIP2 Method</span>
+
+<span class="sd">        More here: https://docs.python.org/3/library/tarfile.html</span>
+
+<span class="sd">        :param filename: Name of the archive</span>
+
+<span class="sd">        :param dest: Where the archive is going to be placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveEngine</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.bz2&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Useful description of the Engine used</span>
+
+<span class="sd">        :return: String with a description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;This engine uses BZIP2 for compression&quot;</span>
+
+<div class="viewcode-block" id="ZipBzip2.write"><a class="viewcode-back" href="../../src.html#src.engines.ZipBzip2.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to a archive file</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the directory with os.walk() =&gt; Can iterate through it with a truple</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="c1"># get the name of the archive to compare it to the current file which gets iterated through to avoid endless recursion</span>
+        <span class="n">archive_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c1"># open a ZipFile in &#39;Write-mode&#39;</span>
+        <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_BZIP2</span><span class="p">,</span> <span class="n">allowZip64</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">myzip</span><span class="p">:</span>
+            <span class="c1"># src: http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/</span>
+            <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">:</span>
+                <span class="n">myzip</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="c1"># check if current file equals the archive which gets created to avoid recursion</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_name</span> <span class="o">==</span> <span class="n">filename</span><span class="p">:</span> <span class="n">myzip</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="ZipDeflated"><a class="viewcode-back" href="../../src.html#src.engines.ZipDeflated">[docs]</a><span class="k">class</span> <span class="nc">ZipDeflated</span><span class="p">(</span><span class="n">ArchiveEngine</span><span class="p">):</span>
+<div class="viewcode-block" id="ZipDeflated.__init__"><a class="viewcode-back" href="../../src.html#src.engines.ZipDeflated.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class Archives the data via the ZIP class with the Deflated-Method</span>
+
+<span class="sd">        More here: https://docs.python.org/3/library/tarfile.html</span>
+
+<span class="sd">        :param filename: Name of the archive</span>
+
+<span class="sd">        :param dest: Where the archive is going to be placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveEngine</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.zip&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Useful description of the Engine used</span>
+
+<span class="sd">        :return: String with a description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;This engine uses ZIP for compression&quot;</span>
+
+<div class="viewcode-block" id="ZipDeflated.write"><a class="viewcode-back" href="../../src.html#src.engines.ZipDeflated.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to a archive file</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the directory with os.walk() =&gt; Can iterate through it with a truple</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="c1"># get the name of the archive to compare it to the current file which gets iterated through to avoid endless recursion</span>
+        <span class="n">archive_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c1"># open a ZipFile in &#39;Write-mode&#39;</span>
+        <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZIP_DEFLATED</span><span class="p">,</span> <span class="n">allowZip64</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">myzip</span><span class="p">:</span>
+            <span class="c1"># src: http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/</span>
+            <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">:</span>
+                <span class="n">myzip</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="c1"># check if current file equals the archive which gets created to avoid recursion</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_name</span> <span class="o">==</span> <span class="n">filename</span><span class="p">:</span> <span class="n">myzip</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div></div>
+
+
+<div class="viewcode-block" id="TarLzma"><a class="viewcode-back" href="../../src.html#src.engines.TarLzma">[docs]</a><span class="k">class</span> <span class="nc">TarLzma</span><span class="p">(</span><span class="n">ArchiveEngine</span><span class="p">):</span>
+<div class="viewcode-block" id="TarLzma.__init__"><a class="viewcode-back" href="../../src.html#src.engines.TarLzma.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class Archives the data via the TAR class with the LZMA Method</span>
+
+<span class="sd">        More here: https://docs.python.org/3/library/tarfile.html</span>
+
+<span class="sd">        :param filename: Name of the archive</span>
+
+<span class="sd">        :param dest: Where the archive is going to be placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveEngine</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.tar.xz&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Useful description of the Engine used</span>
+
+<span class="sd">        :return: String with a description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;This engine uses TAR and LZMA for compression&quot;</span>
+
+<div class="viewcode-block" id="TarLzma.write"><a class="viewcode-back" href="../../src.html#src.engines.TarLzma.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to a archive file</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the directory with os.walk() =&gt; Can iterate through it with a truple</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="c1"># get the name of the archive to compare it to the current file which gets iterated through to avoid endless recursion</span>
+        <span class="n">archive_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c1"># open a ZipFile in &#39;Write-mode&#39;</span>
+        <span class="k">with</span> <span class="n">TarFile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w:xz&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mytar</span><span class="p">:</span>
+            <span class="c1"># src: http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/</span>
+            <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="c1"># check if current file equals the archive which gets created to avoid recursion</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_name</span> <span class="o">==</span> <span class="n">filename</span><span class="p">:</span> <span class="n">mytar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div></div>
+
+<div class="viewcode-block" id="TarBzip2"><a class="viewcode-back" href="../../src.html#src.engines.TarBzip2">[docs]</a><span class="k">class</span> <span class="nc">TarBzip2</span><span class="p">(</span><span class="n">ArchiveEngine</span><span class="p">):</span>
+<div class="viewcode-block" id="TarBzip2.__init__"><a class="viewcode-back" href="../../src.html#src.engines.TarBzip2.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This class Archives the data via the TAR class with the BZIP2 Method</span>
+
+<span class="sd">        More here: https://docs.python.org/3/library/tarfile.html</span>
+
+<span class="sd">        :param filename: Name of the archive</span>
+
+<span class="sd">        :param dest: Where the archive is going to be placed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ArchiveEngine</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">dest</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.tar.bz2&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span></div>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Useful description of the Engine used</span>
+
+<span class="sd">        :return: String with a description</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;This engine uses TAR and BZIP2 for compression&quot;</span>
+
+<div class="viewcode-block" id="TarBzip2.write"><a class="viewcode-back" href="../../src.html#src.engines.TarBzip2.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to a archive file</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the directory with os.walk() =&gt; Can iterate through it with a truple</span>
+        <span class="nb">dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">)</span>
+        <span class="c1"># get the name of the archive to compare it to the current file which gets iterated through to avoid endless recursion</span>
+        <span class="n">archive_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="o">.</span><span class="n">rfind</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">sep</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c1"># open a ZipFile in &#39;Write-mode&#39;</span>
+        <span class="k">with</span> <span class="n">TarFile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w:bz2&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">mytar</span><span class="p">:</span>
+            <span class="c1"># src: http://stackoverflow.com/questions/1855095/how-to-create-a-zip-archive-of-a-directory/</span>
+            <span class="k">for</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">subdirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+                    <span class="c1"># check if current file equals the archive which gets created to avoid recursion</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">archive_name</span> <span class="o">==</span> <span class="n">filename</span><span class="p">:</span> <span class="n">mytar</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../modules.html">A15 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Martin Woelfer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
