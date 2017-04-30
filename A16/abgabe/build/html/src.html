@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>src Package &#8212; A16 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="factory_musikdatenbank Package" href="src.factory_musikdatenbank.html" />
+    <link rel="prev" title="Project Modules" href="modules.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="src.factory_musikdatenbank.html" title="factory_musikdatenbank Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Project Modules"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="modules.html">A16 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="src-package">
+<h1>src Package<a class="headerlink" href="#src-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><code class="xref py py-mod docutils literal"><span class="pre">src</span></code> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-src.__init__"></span></div>
+<div class="section" id="module-src.generate_modules">
+<span id="generate-modules-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">generate_modules</span></code> Module<a class="headerlink" href="#module-src.generate_modules" title="Permalink to this headline">¶</a></h2>
+<p>sphinx-autopackage-script</p>
+<p>This script parses a directory tree looking for python modules and packages and
+creates ReST files appropriately to create code documentation with Sphinx.
+It also creates a modules index (named modules.&lt;suffix&gt;).</p>
+<dl class="function">
+<dt id="src.generate_modules.create_module_file">
+<code class="descclassname">src.generate_modules.</code><code class="descname">create_module_file</code><span class="sig-paren">(</span><em>package</em>, <em>module</em>, <em>opts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#create_module_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.create_module_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the text of the file and write the file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.create_modules_toc_file">
+<code class="descclassname">src.generate_modules.</code><code class="descname">create_modules_toc_file</code><span class="sig-paren">(</span><em>master_package</em>, <em>modules</em>, <em>opts</em>, <em>name='modules'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#create_modules_toc_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.create_modules_toc_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the module&#8217;s index.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.create_package_file">
+<code class="descclassname">src.generate_modules.</code><code class="descname">create_package_file</code><span class="sig-paren">(</span><em>root</em>, <em>master_package</em>, <em>subroot</em>, <em>py_files</em>, <em>opts</em>, <em>subs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#create_package_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.create_package_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the text of the file and write the file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.format_directive">
+<code class="descclassname">src.generate_modules.</code><code class="descname">format_directive</code><span class="sig-paren">(</span><em>module</em>, <em>package=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#format_directive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.format_directive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the automodule directive and add the options.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.format_heading">
+<code class="descclassname">src.generate_modules.</code><code class="descname">format_heading</code><span class="sig-paren">(</span><em>level</em>, <em>text</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#format_heading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.format_heading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a heading of &lt;level&gt; [1, 2 or 3 supported].</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.is_excluded">
+<code class="descclassname">src.generate_modules.</code><code class="descname">is_excluded</code><span class="sig-paren">(</span><em>root</em>, <em>excludes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#is_excluded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.is_excluded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the directory is in the exclude list.</p>
+<dl class="docutils">
+<dt>Note: by having trailing slashes, we avoid common prefix issues, like</dt>
+<dd>e.g. an exlude &#8220;foo&#8221; also accidentally excluding &#8220;foobar&#8221;.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.main">
+<code class="descclassname">src.generate_modules.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse and check the command line arguments.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.makename">
+<code class="descclassname">src.generate_modules.</code><code class="descname">makename</code><span class="sig-paren">(</span><em>package</em>, <em>module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#makename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.makename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join package and module with a dot.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.normalize_excludes">
+<code class="descclassname">src.generate_modules.</code><code class="descname">normalize_excludes</code><span class="sig-paren">(</span><em>rootpath</em>, <em>excludes</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#normalize_excludes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.normalize_excludes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the excluded directory list:
+* must be either an absolute path or start with rootpath,
+* otherwise it is joined with rootpath
+* with trailing slash</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.recurse_tree">
+<code class="descclassname">src.generate_modules.</code><code class="descname">recurse_tree</code><span class="sig-paren">(</span><em>path</em>, <em>excludes</em>, <em>opts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#recurse_tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.recurse_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Look for every file in the directory tree and create the corresponding
+ReST files.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.shall_skip">
+<code class="descclassname">src.generate_modules.</code><code class="descname">shall_skip</code><span class="sig-paren">(</span><em>module</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#shall_skip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.shall_skip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if we want to skip this module.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="src.generate_modules.write_file">
+<code class="descclassname">src.generate_modules.</code><code class="descname">write_file</code><span class="sig-paren">(</span><em>name</em>, <em>text</em>, <em>opts</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/generate_modules.html#write_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.generate_modules.write_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the output file for module/package &lt;name&gt;.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.main">
+<span id="main-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">main</span></code> Module<a class="headerlink" href="#module-src.main" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="src.main.FactoryThread">
+<em class="property">class </em><code class="descclassname">src.main.</code><code class="descname">FactoryThread</code><span class="sig-paren">(</span><em>dir</em>, <em>update_function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/main.html#FactoryThread"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.FactoryThread" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="src.main.FactoryThread.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>dir</em>, <em>update_function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/main.html#FactoryThread.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.FactoryThread.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls super constructor and initializes class attributes</p>
+<p>if self.deamon is set to True, the thread automatically becomes a &#8216;Deamon-Thread&#8217;
+this basically means that if no other Threads are left, this Deamon Threads also automatically
+closes itself, which is incredibly helpful because the gui Thread gets terminated by closing the window
+but the factory_thread will always keep on running unless its a daemon thread</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>dir</strong> &#8211; directory with which the factory gets initialized</li>
+<li><strong>update_function</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.FactoryThread.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/main.html#FactoryThread.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.FactoryThread.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets called with .start()</p>
+<p>initializes the factory, plays the playlist and starts the pyglet app</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="src.main.gui">
+<em class="property">class </em><code class="descclassname">src.main.</code><code class="descname">gui</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/main.html#gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PySide.QtGui.QWidget</span></code></p>
+<dl class="method">
+<dt id="src.main.gui.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/main.html#gui.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.gui.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>calls super constructor, initializes the gui and assigns class attributes
+also makes sure the button has the correct function assigned to it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> &#8211; </td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.gui.file_select">
+<code class="descname">file_select</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/main.html#gui.file_select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.gui.file_select" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets called when the button is pressed</p>
+<p>disables the button and starts the factory process
+the factory process takes the dir (which gets returned by the QFileDialog) and the function to update the data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.main.gui.set_data">
+<code class="descname">set_data</code><span class="sig-paren">(</span><em>interpret</em>, <em>title</em>, <em>album</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/main.html#gui.set_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.main.gui.set_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the data on the gui</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>interpret</strong> &#8211; the intepret of the current song</li>
+<li><strong>title</strong> &#8211; title of the current song</li>
+<li><strong>album</strong> &#8211; album of the current song</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">None</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="src.main.gui.staticMetaObject">
+<code class="descname">staticMetaObject</code><em class="property"> = &lt;PySide.QtCore.QMetaObject object at 0x04BE5850&gt;</em><a class="headerlink" href="#src.main.gui.staticMetaObject" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="src.factory_musikdatenbank.html">factory_musikdatenbank Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.factory_musikdatenbank.html#id1"><code class="docutils literal"><span class="pre">factory_musikdatenbank</span></code> Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.factory_musikdatenbank.html#module-src.factory_musikdatenbank.MusikdatenbankFabrik"><code class="docutils literal"><span class="pre">MusikdatenbankFabrik</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.factory_musikdatenbank.html#module-src.factory_musikdatenbank.MusikdatenbankFileFabrik"><code class="docutils literal"><span class="pre">MusikdatenbankFileFabrik</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.factory_musikdatenbank.html#module-src.factory_musikdatenbank.MusikdatenbankMockupFabrik"><code class="docutils literal"><span class="pre">MusikdatenbankMockupFabrik</span></code> Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="src.gui.html">gui Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.gui.html#id1"><code class="docutils literal"><span class="pre">gui</span></code> Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.gui.html#module-src.gui.gui"><code class="docutils literal"><span class="pre">gui</span></code> Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="src.product_musikstueck.html">product_musikstueck Package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="src.product_musikstueck.html#id1"><code class="docutils literal"><span class="pre">product_musikstueck</span></code> Package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.product_musikstueck.html#module-src.product_musikstueck.Musikstueck"><code class="docutils literal"><span class="pre">Musikstueck</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.product_musikstueck.html#module-src.product_musikstueck.MusikstueckFile"><code class="docutils literal"><span class="pre">MusikstueckFile</span></code> Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="src.product_musikstueck.html#module-src.product_musikstueck.MusikstueckMockup"><code class="docutils literal"><span class="pre">MusikstueckMockup</span></code> Module</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="modules.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">src Package</a><ul>
+<li><a class="reference internal" href="#id1"><code class="docutils literal"><span class="pre">src</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-src.generate_modules"><code class="docutils literal"><span class="pre">generate_modules</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-src.main"><code class="docutils literal"><span class="pre">main</span></code> Module</a></li>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">Project Modules</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="src.factory_musikdatenbank.html"
+                        title="next chapter">factory_musikdatenbank Package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/src.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="src.factory_musikdatenbank.html" title="factory_musikdatenbank Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="Project Modules"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="modules.html">A16 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Martin Woelfer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

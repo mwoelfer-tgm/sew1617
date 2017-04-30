@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>src.main &#8212; A16 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../modules.html">A16 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for src.main</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">src.factory_musikdatenbank.MusikdatenbankMockupFabrik</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">src.factory_musikdatenbank.MusikdatenbankFileFabrik</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span><span class="p">,</span> <span class="n">Value</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">src.gui.gui</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">PySide.QtGui</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">PySide.QtCore</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">pyglet</span>
+
+<div class="viewcode-block" id="gui"><a class="viewcode-back" href="../../src.html#src.main.gui">[docs]</a><span class="k">class</span> <span class="nc">gui</span><span class="p">(</span><span class="n">QWidget</span><span class="p">):</span>
+    <span class="c1"># gui class which acts as a controller for the view</span>
+<div class="viewcode-block" id="gui.__init__"><a class="viewcode-back" href="../../src.html#src.main.gui.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        calls super constructor, initializes the gui and assigns class attributes</span>
+<span class="sd">        also makes sure the button has the correct function assigned to it</span>
+
+<span class="sd">        :param parent:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__gui</span> <span class="o">=</span> <span class="n">Ui_Form</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__gui</span><span class="o">.</span><span class="n">setupUi</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gui</span><span class="o">.</span><span class="n">interpret_label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gui</span><span class="o">.</span><span class="n">title_label</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">album</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gui</span><span class="o">.</span><span class="n">album_albel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__button</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__gui</span><span class="o">.</span><span class="n">pushButton</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">__button</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_select</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="gui.file_select"><a class="viewcode-back" href="../../src.html#src.main.gui.file_select">[docs]</a>    <span class="k">def</span> <span class="nf">file_select</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gets called when the button is pressed</span>
+
+<span class="sd">        disables the button and starts the factory process</span>
+<span class="sd">        the factory process takes the dir (which gets returned by the QFileDialog) and the function to update the data</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__button</span><span class="o">.</span><span class="n">setEnabled</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span> <span class="o">=</span> <span class="n">FactoryThread</span><span class="p">(</span><span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;Ordner für Playlist auswählen&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fp</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="gui.set_data"><a class="viewcode-back" href="../../src.html#src.main.gui.set_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interpret</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">album</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates the data on the gui</span>
+
+<span class="sd">        :param interpret: the intepret of the current song</span>
+
+<span class="sd">        :param title: title of the current song</span>
+
+<span class="sd">        :param album: album of the current song</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interpret</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">interpret</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">album</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">album</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">titel</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">title</span><span class="p">)</span></div></div>
+
+<div class="viewcode-block" id="FactoryThread"><a class="viewcode-back" href="../../src.html#src.main.FactoryThread">[docs]</a><span class="k">class</span> <span class="nc">FactoryThread</span><span class="p">(</span><span class="n">Thread</span><span class="p">):</span>
+    <span class="c1"># factorythread for starting the factory process aka playing the music</span>
+    <span class="c1"># has to implemented as thread and can&#39;t be written plain in the main thread because</span>
+    <span class="c1"># else the gui freezes</span>
+<div class="viewcode-block" id="FactoryThread.__init__"><a class="viewcode-back" href="../../src.html#src.main.FactoryThread.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="nb">dir</span><span class="p">,</span><span class="n">update_function</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calls super constructor and initializes class attributes</span>
+
+<span class="sd">        if self.deamon is set to True, the thread automatically becomes a &#39;Deamon-Thread&#39;</span>
+<span class="sd">        this basically means that if no other Threads are left, this Deamon Threads also automatically</span>
+<span class="sd">        closes itself, which is incredibly helpful because the gui Thread gets terminated by closing the window</span>
+<span class="sd">        but the factory_thread will always keep on running unless its a daemon thread</span>
+
+<span class="sd">        :param dir: directory with which the factory gets initialized</span>
+
+<span class="sd">        :param update_function:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dir</span> <span class="o">=</span> <span class="nb">dir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_function</span> <span class="o">=</span> <span class="n">update_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">daemon</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="FactoryThread.run"><a class="viewcode-back" href="../../src.html#src.main.FactoryThread.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        gets called with .start()</span>
+
+<span class="sd">        initializes the factory, plays the playlist and starts the pyglet app</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fabrik</span> <span class="o">=</span> <span class="n">MusikdatenbankFileFabrik</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dir</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">update_function</span><span class="p">)</span>
+        <span class="c1"># fabrik = MusikdatenbankMockupFabrik()</span>
+        <span class="n">fabrik</span><span class="o">.</span><span class="n">abspielen</span><span class="p">()</span>
+        <span class="n">pyglet</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">()</span></div></div>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># start the gui</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">vc</span> <span class="o">=</span> <span class="n">gui</span><span class="p">()</span>
+    <span class="n">vc</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../modules.html">A16 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Martin Woelfer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>

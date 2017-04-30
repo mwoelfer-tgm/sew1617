@@ -1,0 +1,29 @@
+%!TEX root=../document.tex
+
+\section{Einführung}
+Schreibe ein Programm, welches einen Music Player einerseits simuliert und andererseits implementiert!
+
+\subsection{Grundanforderungen}
+\begin{itemize}
+\item Verwende die vorgegebenen Klassen:
+	\begin{itemize}
+		\item main: Erzeugt entweder eine Mockup-Fabrik oder eine echte Fabrik
+		\item Musikstueck: Abstrakte Produkt-Klasse
+		\item MusikdatenbankFabrik: Abstrakte Fabrik mit Fabrik-Methode \verb|lade_musik|
+	\end{itemize}
+\item Eine eigene Mockup-Klasse mockt die abspielen-Methode mit einer simplen Ausgabe (Mockup-Produkt), z.B. Sie hören den Titel XXX von YYY aus dem Album ZZZ
+\item Eine eigene Mockup-Klasse erzeugt einige beliebige Mockup-Produkte (Mockup-Fabrik)
+\item Eine eigene Klasse spielt die Musik ab (File-Produkt)
+\item Eine eigene Klasse erzeugt die echten Produkte, indem sie nach mp3-Files sucht und für jedes mp3-File ein Produkt erzeugt (File-Fabrik)
+\item Kommentare und Sphinx-Dokumentation
+\item Protokoll
+\end{itemize}
+\textbf{Tipp}: Verwende zum Abspielen die Library pyglet. Achtung: pyglet.app.run() endet nicht automatisch, sondern muss über ein Callback nach dem Song über pyglet.app.exit() wieder beendet werden!
+
+\subsection{Erweiterungen}
+\begin{itemize}
+\item Recherchiere, wie aus Musikdateien automatisch Titel, Album und Interpret ausgelesen werden können
+\item Füge die Funktionalität deiner echten Produktfamilie hinzu, sodass die Informationen ebenfalls angezeigt werden können
+\item Baue eine (sehr simple) GUI für deinen Music Player
+\end{itemize}
+\clearpage
