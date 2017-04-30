@@ -15,6 +15,7 @@ class MusikdatenbankMockupFabrik(MusikdatenbankFabrik):
     def lade_musik(self):
         """
         Fügt der Playlistt MockupMusikstuecke hinzu welche Manuell generiert werden
+
         :return: None
         """
         self.playlist.append(MusikstueckMockup("1st day out tha feds", "Gucci Mane", "Everybody Looking"))

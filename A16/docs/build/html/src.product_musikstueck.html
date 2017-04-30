@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>product_musikstueck Package &#8212; A16 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="gui Package" href="src.gui.html" /> 
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="src.gui.html" title="gui Package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="modules.html">A16 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="src.html" accesskey="U">src Package</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="product-musikstueck-package">
+<h1>product_musikstueck Package<a class="headerlink" href="#product-musikstueck-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><code class="xref py py-mod docutils literal"><span class="pre">product_musikstueck</span></code> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-src.product_musikstueck"></span></div>
+<div class="section" id="module-src.product_musikstueck.Musikstueck">
+<span id="musikstueck-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">Musikstueck</span></code> Module<a class="headerlink" href="#module-src.product_musikstueck.Musikstueck" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="src.product_musikstueck.Musikstueck.Musikstueck">
+<em class="property">class </em><code class="descclassname">src.product_musikstueck.Musikstueck.</code><code class="descname">Musikstueck</code><span class="sig-paren">(</span><em>titel</em>, <em>interpret</em>, <em>album</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/product_musikstueck/Musikstueck.html#Musikstueck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.product_musikstueck.Musikstueck.Musikstueck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Die basisklasse fuer alle Musikstuecke</p>
+<dl class="method">
+<dt id="src.product_musikstueck.Musikstueck.Musikstueck.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>titel</em>, <em>interpret</em>, <em>album</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/product_musikstueck/Musikstueck.html#Musikstueck.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.product_musikstueck.Musikstueck.Musikstueck.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="src.product_musikstueck.Musikstueck.Musikstueck.abspielen">
+<code class="descname">abspielen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/product_musikstueck/Musikstueck.html#Musikstueck.abspielen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.product_musikstueck.Musikstueck.Musikstueck.abspielen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.product_musikstueck.MusikstueckFile">
+<span id="musikstueckfile-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">MusikstueckFile</span></code> Module<a class="headerlink" href="#module-src.product_musikstueck.MusikstueckFile" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="src.product_musikstueck.MusikstueckFile.MusikstueckFile">
+<em class="property">class </em><code class="descclassname">src.product_musikstueck.MusikstueckFile.</code><code class="descname">MusikstueckFile</code><span class="sig-paren">(</span><em>file</em>, <em>laenge</em>, <em>titel</em>, <em>interpret</em>, <em>album</em>, <em>update_function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/product_musikstueck/MusikstueckFile.html#MusikstueckFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.product_musikstueck.MusikstueckFile.MusikstueckFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.product_musikstueck.Musikstueck.Musikstueck" title="src.product_musikstueck.Musikstueck.Musikstueck"><code class="xref py py-class docutils literal"><span class="pre">src.product_musikstueck.Musikstueck.Musikstueck</span></code></a></p>
+<dl class="method">
+<dt id="src.product_musikstueck.MusikstueckFile.MusikstueckFile.__init__">
+<code class="descname">__init__</code><span class="sig-paren">(</span><em>file</em>, <em>laenge</em>, <em>titel</em>, <em>interpret</em>, <em>album</em>, <em>update_function</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/product_musikstueck/MusikstueckFile.html#MusikstueckFile.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.product_musikstueck.MusikstueckFile.MusikstueckFile.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds 2 additional parameters to the super constructor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>file</strong> &#8211; Thile file object which gets played</li>
+<li><strong>laenge</strong> &#8211; The length of the mp3 file in order to pause the playlist for this amount</li>
+<li><strong>titel</strong> &#8211; Title of the song, read out of the mp3 file</li>
+<li><strong>interpret</strong> &#8211; Artist of the song, read out of the mp3 file</li>
+<li><strong>album</strong> &#8211; Album of the song, read out of the mp3 file</li>
+<li><strong>update_function</strong> &#8211; function of the gui object to update the data</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="src.product_musikstueck.MusikstueckFile.MusikstueckFile.abspielen">
+<code class="descname">abspielen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/product_musikstueck/MusikstueckFile.html#MusikstueckFile.abspielen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.product_musikstueck.MusikstueckFile.MusikstueckFile.abspielen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Play the file object given and update information</p>
+<p>In order for the playlist not to play every song at the same time, everytime a song is played, time.sleep for the length of the song</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-src.product_musikstueck.MusikstueckMockup">
+<span id="musikstueckmockup-module"></span><h2><code class="xref py py-mod docutils literal"><span class="pre">MusikstueckMockup</span></code> Module<a class="headerlink" href="#module-src.product_musikstueck.MusikstueckMockup" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="src.product_musikstueck.MusikstueckMockup.MusikstueckMockup">
+<em class="property">class </em><code class="descclassname">src.product_musikstueck.MusikstueckMockup.</code><code class="descname">MusikstueckMockup</code><span class="sig-paren">(</span><em>titel</em>, <em>interpret</em>, <em>album</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/product_musikstueck/MusikstueckMockup.html#MusikstueckMockup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.product_musikstueck.MusikstueckMockup.MusikstueckMockup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#src.product_musikstueck.Musikstueck.Musikstueck" title="src.product_musikstueck.Musikstueck.Musikstueck"><code class="xref py py-class docutils literal"><span class="pre">src.product_musikstueck.Musikstueck.Musikstueck</span></code></a></p>
+<dl class="method">
+<dt id="src.product_musikstueck.MusikstueckMockup.MusikstueckMockup.abspielen">
+<code class="descname">abspielen</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/src/product_musikstueck/MusikstueckMockup.html#MusikstueckMockup.abspielen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#src.product_musikstueck.MusikstueckMockup.MusikstueckMockup.abspielen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gibt lediglich Titel, Interpret und Album des momentanten Stückes in der Konsole aus anstatt es tatsächlich abzuspielen</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="modules.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">product_musikstueck Package</a><ul>
+<li><a class="reference internal" href="#id1"><code class="docutils literal"><span class="pre">product_musikstueck</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-src.product_musikstueck.Musikstueck"><code class="docutils literal"><span class="pre">Musikstueck</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-src.product_musikstueck.MusikstueckFile"><code class="docutils literal"><span class="pre">MusikstueckFile</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-src.product_musikstueck.MusikstueckMockup"><code class="docutils literal"><span class="pre">MusikstueckMockup</span></code> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="src.gui.html"
+                        title="previous chapter">gui Package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/src.product_musikstueck.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="src.gui.html" title="gui Package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="modules.html">A16 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="src.html" >src Package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Martin Woelfer.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.1.
+    </div>
+  </body>
+</html>
